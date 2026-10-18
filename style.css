@@ -104,3 +104,9 @@ footer {
 @media (prefers-reduced-motion: no-preference) {
   .watermark { transition: transform 600ms ease; }
 }
+
+footer .heart {
+  color: var(--tangerine);
+  font-size: 1.1em;
+  line-height: 1;
+}
