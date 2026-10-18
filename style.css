@@ -1,5 +1,6 @@
 :root {
-  --tangerine: #F28C28;
+  --cream: #FFF6E9;
+  --tangerine: #E06A16;
   --celadon: #B7E4C7;
   --ink: #1C1410;
   --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
@@ -13,7 +14,7 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   padding: 0 clamp(16px, 6vw, 96px);
-  background: var(--tangerine);
+  background: var(--cream);
   color: var(--ink);
   font: 18px/1.5 var(--sans);
   -webkit-font-smoothing: antialiased;
@@ -36,6 +37,12 @@ h1 {
   font-size: clamp(84px, 16vw, 208px);
   line-height: 0.9;
   letter-spacing: -0.03em;
+  color: var(--tangerine);
+}
+.hero-mark {
+  font-size: clamp(72px, 10vw, 128px);
+  line-height: 1;
+  margin-bottom: -8px;
 }
 .tagline {
   margin: 0;
@@ -73,5 +80,6 @@ footer {
 }
 @media (max-width: 480px) {
   main { gap: 24px; padding: 64px 0 40px; }
+  .hero-mark { margin-bottom: -4px; }
   footer { font-size: 14px; }
 }
