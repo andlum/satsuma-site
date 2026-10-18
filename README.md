@@ -77,10 +77,22 @@ becomes clickable, tick it.
 - https://www.satsuma.works redirects to the apex.
 - Send a test mail to hello@satsuma.works and confirm it still forwards.
 
-## Analytics
+## Analytics: GoatCounter
 
-Not yet wired in. The comment near the bottom of `index.html` marks where a
-snippet goes once one is chosen.
+The page loads the GoatCounter script (no cookies, no personal data,
+open source). To finish:
+
+1. Sign up at https://www.goatcounter.com/signup and pick a site code
+   (for example `satsuma`, which gives `satsuma.goatcounter.com`).
+2. In `index.html`, replace `YOUR-CODE` in the `data-goatcounter` URL with
+   that code. Commit and push.
+3. Dashboard: `https://<code>.goatcounter.com`. Visits from your own
+   machine can be excluded by visiting the site once with
+   `#toggle-goatcounter` appended to the URL.
+
+GoatCounter is free for personal and non-commercial use and asks for a
+contribution otherwise; a studio site probably counts as commercial, so
+plan on a small donation or self-hosting if traffic ever matters.
 
 ## Later: moving the domain to Cloudflare
 
