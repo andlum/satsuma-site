@@ -88,9 +88,8 @@ moving DNS to Cloudflare. To finish:
    **Add a site**, enter `satsuma.works`, and choose the manual
    JavaScript snippet option (not automatic setup, since the domain is
    not proxied by Cloudflare yet).
-2. Copy the `token` value from the snippet Cloudflare shows and replace
-   `YOUR-TOKEN` in `index.html`. The rest of the snippet is already
-   there. Commit and push.
+2. The token is already in `index.html`. If you ever re-create the site
+   in Cloudflare, copy the new token into the `data-cf-beacon` attribute.
 3. Data appears in the same Web Analytics page within a few minutes of
    the first visit.
 
