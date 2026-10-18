@@ -77,22 +77,25 @@ becomes clickable, tick it.
 - https://www.satsuma.works redirects to the apex.
 - Send a test mail to hello@satsuma.works and confirm it still forwards.
 
-## Analytics: GoatCounter
+## Analytics: Cloudflare Web Analytics
 
-The page loads the GoatCounter script (no cookies, no personal data,
-open source). To finish:
+The page loads the Cloudflare Web Analytics beacon (no cookies, no
+personal data, no cross-site tracking). It works on GitHub Pages without
+moving DNS to Cloudflare. To finish:
 
-1. Sign up at https://www.goatcounter.com/signup and pick a site code
-   (for example `satsuma`, which gives `satsuma.goatcounter.com`).
-2. In `index.html`, replace `YOUR-CODE` in the `data-goatcounter` URL with
-   that code. Commit and push.
-3. Dashboard: `https://<code>.goatcounter.com`. Visits from your own
-   machine can be excluded by visiting the site once with
-   `#toggle-goatcounter` appended to the URL.
+1. In the Cloudflare dashboard go to **Analytics & Logs > Web Analytics**
+   (sometimes just **Web Analytics** in the left sidebar), click
+   **Add a site**, enter `satsuma.works`, and choose the manual
+   JavaScript snippet option (not automatic setup, since the domain is
+   not proxied by Cloudflare yet).
+2. Copy the `token` value from the snippet Cloudflare shows and replace
+   `YOUR-TOKEN` in `index.html`. The rest of the snippet is already
+   there. Commit and push.
+3. Data appears in the same Web Analytics page within a few minutes of
+   the first visit.
 
-GoatCounter is free for personal and non-commercial use and asks for a
-contribution otherwise; a studio site probably counts as commercial, so
-plan on a small donation or self-hosting if traffic ever matters.
+When the domain moves to Cloudflare in December you can leave this as is,
+or switch the site to automatic setup and drop the script tag.
 
 ## Later: moving the domain to Cloudflare
 
