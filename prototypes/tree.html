@@ -92,6 +92,29 @@ h1 {
 }
 .trunk { cursor: pointer; }
 
+/* ---- picking ---- */
+.fruit.ripe { cursor: grab; touch-action: none; outline: none; }
+.fruit.ripe:focus-visible .skin { stroke: var(--ink); stroke-width: 2; }
+.fruit .sway { transform-origin: 0 -12px; transition: transform .15s ease, filter .15s ease; }
+.fruit.ripe:hover .sway { animation: sway 1.2s ease-in-out infinite; }
+.fruit.is-grabbed .sway, .fruit.is-dragging .sway { animation: none; transform: translateY(-4px); filter: drop-shadow(0 5px 4px rgba(28,20,16,.3)); }
+.fruit.is-grabbed, .fruit.is-dragging, .fruit.is-detached, .fruit.is-open { cursor: grabbing; }
+.fruit.is-detached .sway, .fruit.is-open .sway { animation: none; filter: drop-shadow(0 8px 6px rgba(28,20,16,.22)); }
+.fruit.is-detached .body, .fruit.is-open .body { transition: transform .22s ease-out; }
+.fruit.wobble .sway { animation: wobble .5s ease-in-out; }
+.stem { transform-origin: 0 0; }
+.stem.snap { animation: snap .25s ease-out forwards; }
+.tree.has-open .fruit:not(.is-open) { opacity: .7; transition: opacity .2s; }
+@keyframes sway { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
+@keyframes wobble { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-8deg); } 70% { transform: rotate(6deg); } }
+@keyframes snap { to { transform: scaleY(.15); opacity: 0; } }
+
+.tip {
+  position: absolute; transform: translate(-50%, -100%); white-space: nowrap; pointer-events: none;
+  padding: 6px 10px; border-radius: 8px; background: var(--ink); color: var(--cream); font-size: 13px;
+}
+.card { position: absolute; z-index: 2; padding: 18px 20px 16px; border-radius: 14px; background: #fff; box-shadow: 0 12px 32px rgba(28,20,16,.18); }
+
 /* ---- roster ---- */
 .roster { list-style: none; margin: 0; padding: 0 0 0 0; border-top: 1px solid #EBDCC6; }
 .roster li { display: flex; gap: 12px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #EBDCC6; }
@@ -215,6 +238,11 @@ h1 {
         </g>
       </g>
     </svg>
+    <div class="card" id="card" hidden>
+      <div class="card-body"></div>
+      <button class="close" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="tip" id="tip" role="status" hidden></div>
   </div>
   <p class="hint">Hold a ripe one and pull.</p>
 
@@ -263,6 +291,118 @@ h1 {
   try { grown = localStorage.getItem(KEY) === '1'; } catch (e) {}
   if (!grown) grow();
   svg.querySelector('.trunk').addEventListener('click', grow);
+
+  // ---- picking ----
+  var HOLD = 250, DETACH = 40, DROP = 24, STEM = 12; // ms, svg units
+  var card = document.getElementById('card');
+  var tip = document.getElementById('tip');
+  var open = null; // ctx of the fruit whose card is showing
+  var STATES = ['pressed', 'grabbed', 'dragging', 'detached', 'open', 'returning'];
+
+  function unit() { return svg.viewBox.baseVal.width / svg.getBoundingClientRect().width; }
+  function go(c, s) { c.state = s; STATES.forEach(function (k) { c.f.classList.toggle('is-' + k, k === s); }); }
+  function setPos(c, x, y) {
+    c.x = x; c.y = y;
+    c.body.style.transform = 'translate(' + x + 'px,' + (STEM + y) + 'px)';
+    if (c.state !== 'detached' && c.state !== 'open')
+      c.stem.setAttribute('d', 'M0 0Q' + x * .2 + ' ' + (STEM + y) * .6 + ' ' + x + ' ' + (STEM + y));
+  }
+  function wobble(f) { f.classList.add('wobble'); }
+  svg.addEventListener('animationend', function (e) {
+    if (e.animationName === 'wobble') e.target.closest('.fruit').classList.remove('wobble');
+  });
+  // client point for a spot in the fruit's own coordinates, relative to .tree
+  function at(f, x, y) {
+    var p = svg.createSVGPoint(); p.x = x; p.y = y;
+    p = p.matrixTransform(f.parentNode.getScreenCTM());
+    var r = tree.getBoundingClientRect();
+    return { x: p.x - r.left, y: p.y - r.top };
+  }
+
+  function detach(c) {
+    go(c, 'detached');
+    c.stem.classList.add('snap');
+    void c.body.getBoundingClientRect(); // let the drop transition pick up
+    setPos(c, c.x, c.y + DROP);
+    openCard(c);
+  }
+  function spring(c) {
+    go(c, 'returning');
+    c.stem.classList.remove('snap');
+    var x0 = c.x, y0 = c.y, t0 = performance.now();
+    if (reduced) x0 = y0 = 0;
+    (function step(now) {
+      var t = Math.min(1, (now - t0) / 300), p = t - 1;
+      var e = 1 + 2.7 * p * p * p + 1.7 * p * p; // ease-out-back
+      setPos(c, x0 * (1 - e), y0 * (1 - e));
+      if (t < 1) requestAnimationFrame(step); else go(c, 'idle');
+    })(t0);
+  }
+
+  function onDown(e) {
+    var c = e.currentTarget.__c;
+    if (e.button > 0 || (c.state && c.state !== 'idle')) return;
+    c.f.setPointerCapture(e.pointerId);
+    c.px = e.clientX; c.py = e.clientY;
+    go(c, 'pressed');
+    c.timer = setTimeout(function () { go(c, 'grabbed'); }, HOLD);
+  }
+  function onMove(e) {
+    var c = e.currentTarget.__c;
+    if (c.state !== 'grabbed' && c.state !== 'dragging') return;
+    var k = unit();
+    if (c.state === 'grabbed') go(c, 'dragging');
+    setPos(c, (e.clientX - c.px) * k, (e.clientY - c.py) * k);
+    if (Math.hypot(c.x, c.y) > DETACH) detach(c);
+  }
+  function onUp(e) {
+    var c = e.currentTarget.__c;
+    clearTimeout(c.timer);
+    if (c.state === 'pressed') { go(c, 'idle'); wobble(c.f); }
+    else if (c.state === 'grabbed' || c.state === 'dragging') spring(c);
+  }
+
+  // not ripe: wobble and a label
+  function notYet(e) {
+    var f = e.currentTarget;
+    wobble(f);
+    var p = at(f, 0, -6);
+    tip.textContent = f.dataset.name + ' · ' + f.dataset.status + ' · not ripe yet';
+    tip.style.left = p.x + 'px'; tip.style.top = p.y + 'px'; tip.hidden = false;
+    clearTimeout(tip.timer);
+    tip.timer = setTimeout(function () { tip.hidden = true; }, 1800);
+  }
+
+  // ---- card ----
+  function openCard(c) {
+    if (open && open !== c) closeCard(false);
+    open = c;
+    var t = document.querySelector('template[data-slug="' + c.f.dataset.slug + '"]');
+    var body = card.querySelector('.card-body');
+    body.innerHTML = '';
+    if (t) body.appendChild(t.content.cloneNode(true));
+    tree.classList.add('has-open');
+    card.hidden = false;
+    go(c, 'open');
+  }
+  function closeCard(refocus) {
+    if (!open) return;
+    var c = open; open = null;
+    card.hidden = true;
+    tree.classList.remove('has-open');
+    spring(c);
+    if (refocus !== false) c.f.focus();
+  }
+  card.querySelector('.close').addEventListener('click', function () { closeCard(); });
+
+  svg.querySelectorAll('.fruit').forEach(function (f) {
+    if (!f.classList.contains('ripe')) { f.addEventListener('pointerdown', notYet); return; }
+    f.__c = { f: f, body: f.querySelector('.body'), stem: f.querySelector('.stem'), x: 0, y: 0, state: 'idle' };
+    f.addEventListener('pointerdown', onDown);
+    f.addEventListener('pointermove', onMove);
+    f.addEventListener('pointerup', onUp);
+    f.addEventListener('pointercancel', onUp);
+  });
 
   // ---- prototype only: reset link ----
   document.getElementById('reset').addEventListener('click', function (e) {
