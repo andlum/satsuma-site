@@ -109,6 +109,7 @@
     if (t) body.appendChild(t.content.cloneNode(true));
     body.querySelector('h2').id = 'card-title';
     go(c, 'open');
+    tree.classList.add('picked');
     card.showModal();
   }
   card.addEventListener('close', function () {

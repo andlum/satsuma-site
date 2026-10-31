@@ -1,6 +1,7 @@
 ---
 title: Studio Satsuma
 scripts: [tree]
+hideFooter: true
 ---
 <main class="home">
   <header class="hero">
@@ -10,16 +11,17 @@ scripts: [tree]
 
   <section class="stage" aria-label="The satsuma tree">
     {% include "tree.njk" %}
-    <p class="hint">Pick a ripe one.</p>
   </section>
 
-  <section class="projects" aria-labelledby="projects-heading">
+  {#- The roster: the canonical list for screen readers, search engines and
+      no-JS visitors. Not shown; the tree is the visible roster. #}
+  <section class="projects visually-hidden" aria-labelledby="projects-heading">
     <h2 id="projects-heading">Projects</h2>
     <ul>
       {% for project in collections.projects %}
       <li>
         {% if project.data.icon %}<img class="project-icon" src="{{ project.data.icon }}" alt="" width="40" height="40">{% endif %}
-        <span class="name">{% if project.url %}<a href="{{ project.url }}">{{ project.data.title }}</a>{% else %}{{ project.data.title }}{% endif %}</span>
+        <span class="name">{% if project.url %}<a href="{{ project.url }}" tabindex="-1">{{ project.data.title }}</a>{% else %}{{ project.data.title }}{% endif %}</span>
         <span class="status" data-status="{{ project.data.status }}">{{ project.data.status | statusWord }}</span>
         <span class="one-line">{{ project.data.oneLine }}</span>
       </li>

@@ -17,7 +17,7 @@
 </head>
 <body>
   {{ content | safe }}
-  <footer>
+  <footer{% if hideFooter %} class="visually-hidden"{% endif %}>
     <span>Satsuma LLC</span>
     <span>Made with <span class="heart" role="img" aria-label="love">&#9829;&#xFE0E;</span> in Brooklyn</span>
   </footer>

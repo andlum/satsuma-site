@@ -268,6 +268,22 @@
       </g>
       {%- endfor %}
     </g>
+    {#- "Pick me": an arrow from below the canopy to the first ripe fruit.
+        tree.js hides it once a fruit has been picked. #}
+    {%- set live = [] %}
+    {%- for project in collections.projects %}{% if project.data.status == "live" %}{% set _ = live.push(anchors[project.data.slot - 1]) %}{% endif %}{% endfor %}
+    {%- if live.length %}
+    {%- set a = live[0] %}
+    {%- set d = -1 if a[0] < 200 else 1 %}
+    {%- set ex = a[0] + d * 14 %}{% set ey = a[1] + 43 %}
+    {%- set sx = a[0] + d * 34 %}{% set sy = 380 %}
+    <g class="pick" aria-hidden="true">
+      <path class="pick-halo" pathLength="1" d="M{{ sx }} {{ sy }} C{{ sx + d * 12 }} {{ sy - (sy - ey) * 0.39 }} {{ ex + d * 24 }} {{ ey + 19 }} {{ ex }} {{ ey }}"/>
+      <path class="pick-line" pathLength="1" d="M{{ sx }} {{ sy }} C{{ sx + d * 12 }} {{ sy - (sy - ey) * 0.39 }} {{ ex + d * 24 }} {{ ey + 19 }} {{ ex }} {{ ey }}"/>
+      <path class="pick-head" d="M-7 -5 L0 0 L-7 5" transform="translate({{ ex }} {{ ey }}) rotate({{ -38 if d < 0 else -142 }})"/>
+      <text class="pick-text" x="{{ a[0] + d * 60 }}" y="402" text-anchor="middle">Pick me</text>
+    </g>
+    {%- endif %}
   </svg>
   <dialog class="card" aria-labelledby="card-title">
     <svg class="card-fruit" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="17" r="12"/><path d="M16 5c2-3 5-3 6-2-2 0-4 1-6 2z"/></svg>

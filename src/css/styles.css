@@ -84,12 +84,11 @@ h2 {
   grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
   grid-template-areas:
     "hero stage"
-    "projects stage"
     "services stage";
   align-content: center;
   align-items: start;
   column-gap: clamp(32px, 6vw, 96px);
-  row-gap: 36px;
+  row-gap: 48px;
   max-width: 1200px;
   padding: clamp(32px, 6vh, 72px) 0 40px;
 }
@@ -111,12 +110,13 @@ h2 {
   align-items: center;
   gap: 8px;
 }
-.hint {
-  margin: 0;
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: clamp(18px, 1.7vw, 22px);
-  color: var(--tangerine);
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* The tree. The SVG comes from _includes/tree.njk, the behavior from
@@ -163,6 +163,17 @@ h2 {
 @keyframes rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
 @keyframes pop { 0% { transform: scale(0); } 65% { transform: scale(1.18); } 85% { transform: scale(.94); } 100% { transform: scale(1); } }
+
+/* "Pick me": an arrow to the first ripe fruit, until one is picked. */
+.pick { color: var(--tangerine); animation: nudge 1.6s ease-in-out infinite; }
+.pick-halo { fill: none; stroke: var(--cream); stroke-width: 8; stroke-linecap: round; }
+.pick-line, .pick-head { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.pick-text { fill: currentColor; font: italic 22px var(--serif); }
+.grow .pick-halo, .grow .pick-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .6s ease-out 3.3s both; }
+.grow .pick-head, .grow .pick-text { opacity: 0; animation: fadeIn .4s ease-out 3.8s forwards; }
+.picked .pick { opacity: 0; transition: opacity .3s; }
+@keyframes nudge { 50% { transform: translate(1px, -4px); } }
+@keyframes fadeIn { to { opacity: 1; } }
 
 /* Picking */
 .fruit.ripe { cursor: grab; touch-action: none; outline: none; }
@@ -238,7 +249,7 @@ h2 {
 @media (max-width: 899px) {
   .home {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "hero" "stage" "projects" "services";
+    grid-template-areas: "hero" "stage" "services";
     align-content: start;
     row-gap: 32px;
     padding-top: 40px;
@@ -267,7 +278,6 @@ h2 {
 }
 
 /* Roster: the canonical list, always rendered. */
-.projects { grid-area: projects; }
 .projects h2 {
   margin: 0 0 6px;
   font: 500 13px/1.5 var(--sans);
