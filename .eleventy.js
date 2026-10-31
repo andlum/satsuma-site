@@ -26,6 +26,20 @@ module.exports = function (eleventyConfig) {
     return word;
   });
 
+  // Accessible label for the tree's SVG, generated from the roster:
+  // "A satsuma tree with three fruit: two ripe, one still green."
+  eleventyConfig.addFilter("treeLabel", (projects) => {
+    const N = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+    const count = { live: 0, "in-progress": 0, "coming-soon": 0 };
+    for (const project of projects) count[project.data.status]++;
+    const parts = [];
+    if (count.live) parts.push(`${N[count.live]} ripe`);
+    if (count["in-progress"]) parts.push(`${N[count["in-progress"]]} still green`);
+    if (count["coming-soon"]) parts.push(`${N[count["coming-soon"]]} in blossom`);
+    const total = projects.length;
+    return `A satsuma tree with ${N[total] || total} fruit: ${parts.join(", ")}.`;
+  });
+
   // The roster, sorted by tree slot. Each project owns one of twelve fruit
   // positions so the tree never reshuffles; two projects on one slot is a
   // build error rather than a visual surprise.

@@ -1,0 +1,114 @@
+{#
+  The satsuma tree. One fruit per project in `collections.projects`, placed at
+  the project's `slot`; fruit type follows status (live = ripe, in-progress =
+  green, coming-soon = blossom). Growth, picking and cards live in
+  src/js/tree.js, which reads everything it needs from this markup.
+#}
+{% set anchors = [
+  [200, 118], [138, 146], [262, 146], [96, 206], [304, 206], [200, 186],
+  [152, 250], [248, 250], [92, 286], [308, 286], [168, 328], [236, 328]
+] %}
+{% set kinds = { "live": "ripe", "in-progress": "green", "coming-soon": "blossom" } %}
+<div class="tree">
+  <svg viewBox="0 0 400 500" role="img" aria-label="{{ collections.projects | treeLabel }}">
+    <path class="ground" pathLength="1" d="M34 454 Q200 442 366 454"/>
+    <ellipse class="root" cx="200" cy="449" rx="24" ry="7"/>
+    <path class="trunk" pathLength="1" d="M200 450 C203 420 196 385 200 340"/>
+    <g class="branches">
+      <path class="branch" pathLength="1" style="--i:0" d="M200 352 C178 330 140 310 112 272"/>
+      <path class="branch" pathLength="1" style="--i:1" d="M200 346 C222 322 262 300 296 268"/>
+      <path class="branch" pathLength="1" style="--i:2" d="M200 344 C198 300 186 262 168 208"/>
+      <path class="branch" pathLength="1" style="--i:3" d="M200 342 C208 296 232 250 252 196"/>
+      <path class="branch" pathLength="1" style="--i:4" d="M200 356 C236 352 268 334 302 312"/>
+    </g>
+    <g class="leaves">
+      <circle class="leaf deep" cx="200" cy="150" r="62" style="transform-origin:200px 206px;--i:0"/>
+      <circle class="leaf deep" cx="130" cy="195" r="58" style="transform-origin:153px 242px;--i:1"/>
+      <circle class="leaf deep" cx="270" cy="195" r="58" style="transform-origin:247px 242px;--i:2"/>
+      <circle class="leaf deep" cx="105" cy="265" r="52" style="transform-origin:142px 294px;--i:3"/>
+      <circle class="leaf deep" cx="295" cy="265" r="52" style="transform-origin:258px 294px;--i:4"/>
+      <circle class="leaf deep" cx="200" cy="295" r="60" style="transform-origin:200px 349px;--i:5"/>
+      <circle class="leaf deep" cx="160" cy="240" r="55" style="transform-origin:179px 286px;--i:6"/>
+      <circle class="leaf deep" cx="245" cy="240" r="55" style="transform-origin:224px 285px;--i:7"/>
+      <circle class="leaf mid" cx="200" cy="130" r="40" style="transform-origin:200px 166px;--i:8"/>
+      <circle class="leaf mid" cx="150" cy="170" r="38" style="transform-origin:160px 203px;--i:9"/>
+      <circle class="leaf mid" cx="250" cy="174" r="40" style="transform-origin:239px 206px;--i:10"/>
+      <circle class="leaf mid" cx="110" cy="225" r="36" style="transform-origin:130px 250px;--i:11"/>
+      <circle class="leaf mid" cx="290" cy="225" r="36" style="transform-origin:270px 250px;--i:12"/>
+      <circle class="leaf mid" cx="165" cy="300" r="36" style="transform-origin:187px 324px;--i:13"/>
+      <circle class="leaf mid" cx="240" cy="300" r="36" style="transform-origin:217px 322px;--i:14"/>
+      <circle class="leaf mid" cx="200" cy="213" r="46" style="transform-origin:200px 254px;--i:15"/>
+      <circle class="leaf hi" cx="188" cy="116" r="11" style="transform-origin:189px 126px;--i:16"/>
+      <circle class="leaf hi" cx="138" cy="158" r="8" style="transform-origin:140px 165px;--i:17"/>
+      <circle class="leaf hi" cx="276" cy="226" r="8" style="transform-origin:271px 231px;--i:18"/>
+      <circle class="leaf hi" cx="124" cy="300" r="7" style="transform-origin:128px 304px;--i:19"/>
+    </g>
+    <g class="fruits">
+      {%- for project in collections.projects %}
+      {%- set p = project.data %}
+      {%- set kind = kinds[p.status] %}
+      {%- set anchor = anchors[p.slot - 1] %}
+      <g class="slot" transform="translate({{ anchor[0] }} {{ anchor[1] }})">
+        <g class="fruit {{ kind }}" data-slug="{{ p.slug }}" data-status="{{ p.status | statusWord | lower }}" data-name="{{ p.title }}" style="--i:{{ loop.index0 }}">
+          {%- if kind == "ripe" %}
+          <path class="stem" d="M0 0 L0 12"/>
+          <g class="body" transform="translate(0 12)">
+            <g class="sway">
+              <circle class="skin" cy="14" r="14"/>
+              <circle class="shine" cx="-5" cy="9" r="4"/>
+              <path class="fleaf" d="M0 1c2-4 6-4 8-3-3 0-5 1-8 3z"/>
+            </g>
+          </g>
+          {%- elif kind == "green" %}
+          <path class="stem" d="M0 0 L0 10"/>
+          <g class="body" transform="translate(0 10)">
+            <g class="sway">
+              <circle class="skin" cy="10" r="10"/>
+              <circle class="rim" cy="10" r="9.5"/>
+            </g>
+          </g>
+          {%- else %}
+          <path class="stem" d="M0 0 L0 8"/>
+          <g class="body" transform="translate(0 8)">
+            <g class="sway">
+              <g class="petal-shadow" transform="translate(1.2 9.5)">
+                <circle cy="-5.5" r="5"/><circle cx="5.2" cy="-1.7" r="5"/><circle cx="3.2" cy="4.5" r="5"/>
+                <circle cx="-3.2" cy="4.5" r="5"/><circle cx="-5.2" cy="-1.7" r="5"/>
+              </g>
+              <g class="petal" transform="translate(0 8)">
+                <circle cy="-5.5" r="5"/><circle cx="5.2" cy="-1.7" r="5"/><circle cx="3.2" cy="4.5" r="5"/>
+                <circle cx="-3.2" cy="4.5" r="5"/><circle cx="-5.2" cy="-1.7" r="5"/>
+              </g>
+              <circle class="eye" cy="8" r="2.4"/>
+            </g>
+          </g>
+          {%- endif %}
+        </g>
+      </g>
+      {%- endfor %}
+    </g>
+  </svg>
+  <div class="card" role="dialog" aria-labelledby="card-title" tabindex="-1" hidden>
+    <div class="card-body"></div>
+    <button class="close" type="button" aria-label="Close">&times;</button>
+  </div>
+  <div class="tip" role="status" hidden></div>
+
+  {#- Card contents, one per ripe fruit. tree.js clones the template whose
+      data-slug matches the picked fruit. #}
+  {%- for project in collections.projects %}
+  {%- if project.data.status == "live" %}
+  <template data-slug="{{ project.data.slug }}">
+    <h2>{{ project.data.title }}</h2>
+    <p class="card-status"><span class="status">{{ project.data.status | statusWord }}</span></p>
+    <p>{{ project.data.oneLine }}</p>
+    {%- if project.url or (project.data.links and project.data.links.length) %}
+    <p class="links">
+      {%- if project.url %}<a href="{{ project.url }}">Project page</a>{% endif %}
+      {%- for link in project.data.links %}<a href="{{ link.url }}">{{ link.label }}</a>{% endfor %}
+    </p>
+    {%- endif %}
+  </template>
+  {%- endif %}
+  {%- endfor %}
+</div>
