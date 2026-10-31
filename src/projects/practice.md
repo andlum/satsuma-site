@@ -1,8 +1,8 @@
 ---
 title: Practice
 slug: practice
-status: live
-oneLine: "[one line]"
+status: in-progress
+oneLine: A small time tracker that helps habits stick.
 platform: ["[platform]"]
 links:
   - label: "[link label]"

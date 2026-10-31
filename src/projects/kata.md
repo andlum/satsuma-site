@@ -1,8 +1,8 @@
 ---
 title: Kata
 slug: kata
-status: live          # live | in-progress | coming-soon
-oneLine: A workout log and routine library for the multisport athlete, with an MCP connection so your assistant can read your training and write your routines.
+status: in-progress  # live | in-progress | coming-soon
+oneLine: A workout companion with an AI coach built in.
 platform: [ios]       # [PLATFORM: iOS / web]
 links:
   - label: App Store
@@ -13,7 +13,6 @@ shipped: "[DATE FIRST SHIPPED]"
 # screenshots:
 #   - src: /img/projects/kata-1.png
 #     alt: "[SCREENSHOT 1: what it shows]"
-draft: true           # name not final; excluded from build and collections
 ---
 
 ## Who it's for
