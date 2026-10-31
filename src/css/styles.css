@@ -3,6 +3,14 @@
   --tangerine: #E06A16;
   --celadon: #B7E4C7;
   --ink: #1C1410;
+  /* Tree palette (spec, "Composition"): two leaf greens, unripe green,
+     blossom shadow, bark, ground. */
+  --leaf: #7CC08E;
+  --leaf-deep: #4E9B6B;
+  --unripe: #9BCB5E;
+  --blossom-shadow: #EDD6B4;
+  --bark: #8A5A3C;
+  --ground: #E9D6B8;
   --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
   --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -72,16 +80,136 @@ h2 {
   line-height: 1.3;
 }
 
-/* The tree sits between the tagline and the hint. Until the interactive
-   tree lands this is an empty box of its final size. */
-.tree {
-  width: 100%;
-  max-width: 640px;
-  aspect-ratio: 4 / 5;
-  margin: 8px 0 0;
-  border: 2px dashed var(--celadon);
-  border-radius: 24px;
+/* The tree sits between the tagline and the hint. The SVG comes from
+   _includes/tree.njk, the behavior from js/tree.js. */
+.tree { position: relative; width: 100%; max-width: 640px; margin: 8px 0 0; }
+.tree svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ground { fill: none; stroke: var(--ground); stroke-width: 7; stroke-linecap: round; }
+.root { fill: var(--bark); }
+.trunk { fill: none; stroke: var(--bark); stroke-width: 22; stroke-linecap: round; cursor: pointer; }
+.branch { fill: none; stroke: var(--bark); stroke-width: 9; stroke-linecap: round; }
+.leaf.deep { fill: var(--leaf-deep); }
+.leaf.mid { fill: var(--leaf); }
+.leaf.hi { fill: var(--celadon); }
+.stem { fill: none; stroke: var(--bark); stroke-width: 2.5; stroke-linecap: round; transform-origin: 0 0; }
+.ripe .skin { fill: var(--tangerine); }
+.ripe .shine { fill: #fff; opacity: .18; }
+.fleaf { fill: var(--celadon); }
+.green .skin { fill: var(--unripe); }
+.green .rim { fill: none; stroke: #fff; stroke-width: 1.5; opacity: .45; }
+.blossom .petal { fill: #fff; }
+.blossom .petal-shadow { fill: var(--blossom-shadow); }
+.blossom .eye { fill: var(--tangerine); opacity: .7; }
+
+/* Growth: static unless tree.js puts .grow on the svg (first visit, or a
+   click on the trunk). */
+.grow .ground, .grow .trunk, .grow .branch { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .6s ease-out both; }
+.grow .trunk { animation-delay: .3s; animation-duration: .7s; }
+.grow .root { transform-origin: 200px 450px; animation: scaleIn .4s ease-out .35s both; }
+.grow .branch { animation-delay: calc(.9s + var(--i, 0) * .07s); animation-duration: .5s; }
+.grow .leaf { animation: scaleIn .55s cubic-bezier(.34, 1.3, .64, 1) both; animation-delay: calc(1.2s + var(--i, 0) * .045s); }
+.grow .fruit { animation: scaleIn .4s ease-out both; animation-delay: calc(2.05s + var(--i, 0) * .1s); }
+.grow .fruit.ripe { animation-name: pop; animation-duration: .5s; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes pop { 0% { transform: scale(0); } 65% { transform: scale(1.18); } 85% { transform: scale(.94); } 100% { transform: scale(1); } }
+
+/* Picking */
+.fruit.ripe { cursor: grab; touch-action: none; outline: none; }
+.fruit.ripe:focus-visible .skin { stroke: var(--ink); stroke-width: 2; }
+.fruit .sway { transform-origin: 0 -12px; transition: transform .15s ease, filter .15s ease; }
+.fruit.ripe:hover .sway { animation: sway 1.2s ease-in-out infinite; }
+.fruit[data-state=grabbed] .sway, .fruit[data-state=dragging] .sway { animation: none; transform: translateY(-4px); filter: drop-shadow(0 5px 4px rgba(28, 20, 16, .3)); }
+.fruit[data-state=grabbed], .fruit[data-state=dragging], .fruit[data-state=detached], .fruit[data-state=open] { cursor: grabbing; }
+.fruit[data-state=detached] .sway, .fruit[data-state=open] .sway { animation: none; filter: drop-shadow(0 8px 6px rgba(28, 20, 16, .22)); }
+.fruit[data-state=detached] .body, .fruit[data-state=open] .body { transition: transform .22s ease-out; }
+.fruit.wobble .sway { animation: wobble .5s ease-in-out; }
+.stem.snap { animation: snap .25s ease-out forwards; }
+.tree.has-open .fruit:not([data-state=open]) { opacity: .7; transition: opacity .2s; }
+@keyframes sway { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
+@keyframes wobble { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-8deg); } 70% { transform: rotate(6deg); } }
+@keyframes snap { to { transform: scaleY(.15); opacity: 0; } }
+
+/* "Locals Only · in progress · not ripe yet" */
+.tip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  pointer-events: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 13px;
 }
+
+/* Card: anchored under the fruit on desktop, a bottom sheet on phones */
+.card {
+  position: absolute;
+  z-index: 2;
+  width: 320px;
+  max-width: 100%;
+  padding: 18px 44px 18px 20px;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 12px 32px rgba(28, 20, 16, .18);
+  font-size: 16px;
+  line-height: 1.45;
+  outline: none;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: var(--arrow, 50%);
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 3px;
+  transform: translateX(-50%) rotate(45deg);
+}
+.card h2 { margin: 0 0 6px; font-size: 28px; }
+.card .card-status { margin: 0 0 10px; }
+.card p { margin: 0 0 12px; }
+.card .links { margin: 0; gap: 8px; }
+.card .links a { min-height: 40px; padding: 8px 16px; font-size: 15px; }
+.card .links a:first-child { background: var(--tangerine); color: #fff; }
+.card .close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font: 24px/1 var(--sans);
+  cursor: pointer;
+}
+.card .close:hover { background: var(--cream); }
+.card:focus-visible, .card .close:focus-visible, .card a:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--celadon); }
+@media (max-width: 639px) {
+  .card {
+    position: fixed;
+    inset: auto 0 0 0 !important;
+    width: auto !important;
+    max-width: none;
+    border-radius: 18px 18px 0 0;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    animation: slideUp .3s ease-out;
+  }
+  .card::before { display: none; }
+}
+@keyframes slideUp { from { transform: translateY(100%); } }
+
+/* Reduced motion: the tree is always grown and still; picking opens
+   instantly (tree.js checks the same query). */
+@media (prefers-reduced-motion: reduce) {
+  .tree *, .tree *::before { animation: none !important; transition: none !important; }
+}
+
 .hint {
   margin: -12px 0 0;
   font-family: var(--serif);
