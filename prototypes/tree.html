@@ -76,6 +76,22 @@ h1 {
 .blossom .petal-shadow { fill: var(--blossom-shadow); }
 .blossom .eye { fill: #F2C14E; }
 
+/* ---- growth: static unless .grow is on the svg ---- */
+.grow .ground, .grow .trunk, .grow .branch { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .6s ease-out both; }
+.grow .trunk { animation-delay: .3s; animation-duration: .7s; }
+.grow .root { transform-origin: 200px 450px; animation: scaleIn .4s ease-out .35s both; }
+.grow .branch { animation-delay: calc(.9s + var(--i, 0) * .07s); animation-duration: .5s; }
+.grow .leaf { animation: scaleIn .55s cubic-bezier(.34, 1.3, .64, 1) both; animation-delay: calc(1.2s + var(--i, 0) * .045s); }
+.grow .fruit { animation: scaleIn .4s ease-out both; animation-delay: calc(2.05s + var(--i, 0) * .1s); }
+.grow .fruit.ripe { animation-name: pop; animation-duration: .5s; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes pop { 0% { transform: scale(0); } 65% { transform: scale(1.18); } 85% { transform: scale(.94); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .tree *, .tree *::before { animation: none !important; transition: none !important; }
+}
+.trunk { cursor: pointer; }
+
 /* ---- roster ---- */
 .roster { list-style: none; margin: 0; padding: 0 0 0 0; border-top: 1px solid #EBDCC6; }
 .roster li { display: flex; gap: 12px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #EBDCC6; }
@@ -95,42 +111,42 @@ h1 {
 
   <div class="tree" id="tree">
     <svg viewBox="0 0 400 500" role="img" aria-label="A satsuma tree.">
-      <path class="ground" d="M34 454 Q200 442 366 454"/>
+      <path class="ground" pathLength="1" d="M34 454 Q200 442 366 454"/>
       <ellipse class="root" cx="200" cy="449" rx="24" ry="7"/>
-      <path class="trunk" d="M200 450 C203 420 196 385 200 340"/>
+      <path class="trunk" pathLength="1" d="M200 450 C203 420 196 385 200 340"/>
       <g class="branches">
-        <path class="branch" d="M200 352 C178 330 140 310 112 272"/>
-        <path class="branch" d="M200 346 C222 322 262 300 296 268"/>
-        <path class="branch" d="M200 344 C198 300 186 262 168 208"/>
-        <path class="branch" d="M200 342 C208 296 232 250 252 196"/>
-        <path class="branch" d="M200 356 C236 352 268 334 302 312"/>
+        <path class="branch" pathLength="1" style="--i:0" d="M200 352 C178 330 140 310 112 272"/>
+        <path class="branch" pathLength="1" style="--i:1" d="M200 346 C222 322 262 300 296 268"/>
+        <path class="branch" pathLength="1" style="--i:2" d="M200 344 C198 300 186 262 168 208"/>
+        <path class="branch" pathLength="1" style="--i:3" d="M200 342 C208 296 232 250 252 196"/>
+        <path class="branch" pathLength="1" style="--i:4" d="M200 356 C236 352 268 334 302 312"/>
       </g>
 
       <g class="leaves back">
-        <circle class="leaf deep" cx="200" cy="150" r="62" style="transform-origin:200px 206px"/>
-        <circle class="leaf deep" cx="130" cy="195" r="58" style="transform-origin:153px 242px"/>
-        <circle class="leaf deep" cx="270" cy="195" r="58" style="transform-origin:247px 242px"/>
-        <circle class="leaf deep" cx="105" cy="265" r="52" style="transform-origin:142px 294px"/>
-        <circle class="leaf deep" cx="295" cy="265" r="52" style="transform-origin:258px 294px"/>
-        <circle class="leaf deep" cx="200" cy="295" r="60" style="transform-origin:200px 349px"/>
-        <circle class="leaf deep" cx="160" cy="240" r="55" style="transform-origin:179px 286px"/>
-        <circle class="leaf deep" cx="245" cy="240" r="55" style="transform-origin:224px 285px"/>
+        <circle class="leaf deep" cx="200" cy="150" r="62" style="transform-origin:200px 206px;--i:0"/>
+        <circle class="leaf deep" cx="130" cy="195" r="58" style="transform-origin:153px 242px;--i:1"/>
+        <circle class="leaf deep" cx="270" cy="195" r="58" style="transform-origin:247px 242px;--i:2"/>
+        <circle class="leaf deep" cx="105" cy="265" r="52" style="transform-origin:142px 294px;--i:3"/>
+        <circle class="leaf deep" cx="295" cy="265" r="52" style="transform-origin:258px 294px;--i:4"/>
+        <circle class="leaf deep" cx="200" cy="295" r="60" style="transform-origin:200px 349px;--i:5"/>
+        <circle class="leaf deep" cx="160" cy="240" r="55" style="transform-origin:179px 286px;--i:6"/>
+        <circle class="leaf deep" cx="245" cy="240" r="55" style="transform-origin:224px 285px;--i:7"/>
       </g>
 
 
       <g class="leaves front">
-        <circle class="leaf mid" cx="200" cy="130" r="40" style="transform-origin:200px 166px"/>
-        <circle class="leaf mid" cx="150" cy="170" r="38" style="transform-origin:160px 203px"/>
-        <circle class="leaf mid" cx="255" cy="172" r="38" style="transform-origin:244px 204px"/>
-        <circle class="leaf mid" cx="110" cy="225" r="36" style="transform-origin:130px 250px"/>
-        <circle class="leaf mid" cx="290" cy="225" r="36" style="transform-origin:270px 250px"/>
-        <circle class="leaf mid" cx="165" cy="300" r="36" style="transform-origin:187px 324px"/>
-        <circle class="leaf mid" cx="240" cy="300" r="36" style="transform-origin:217px 322px"/>
-        <circle class="leaf mid" cx="200" cy="213" r="46" style="transform-origin:200px 254px"/>
-        <circle class="leaf hi" cx="188" cy="116" r="11" style="transform-origin:189px 126px"/>
-        <circle class="leaf hi" cx="138" cy="158" r="8" style="transform-origin:140px 165px"/>
-        <circle class="leaf hi" cx="276" cy="226" r="8" style="transform-origin:271px 231px"/>
-        <circle class="leaf hi" cx="124" cy="300" r="7" style="transform-origin:128px 304px"/>
+        <circle class="leaf mid" cx="200" cy="130" r="40" style="transform-origin:200px 166px;--i:8"/>
+        <circle class="leaf mid" cx="150" cy="170" r="38" style="transform-origin:160px 203px;--i:9"/>
+        <circle class="leaf mid" cx="250" cy="174" r="40" style="transform-origin:239px 206px;--i:10"/>
+        <circle class="leaf mid" cx="110" cy="225" r="36" style="transform-origin:130px 250px;--i:11"/>
+        <circle class="leaf mid" cx="290" cy="225" r="36" style="transform-origin:270px 250px;--i:12"/>
+        <circle class="leaf mid" cx="165" cy="300" r="36" style="transform-origin:187px 324px;--i:13"/>
+        <circle class="leaf mid" cx="240" cy="300" r="36" style="transform-origin:217px 322px;--i:14"/>
+        <circle class="leaf mid" cx="200" cy="213" r="46" style="transform-origin:200px 254px;--i:15"/>
+        <circle class="leaf hi" cx="188" cy="116" r="11" style="transform-origin:189px 126px;--i:16"/>
+        <circle class="leaf hi" cx="138" cy="158" r="8" style="transform-origin:140px 165px;--i:17"/>
+        <circle class="leaf hi" cx="276" cy="226" r="8" style="transform-origin:271px 231px;--i:18"/>
+        <circle class="leaf hi" cx="124" cy="300" r="7" style="transform-origin:128px 304px;--i:19"/>
       </g>
 
       <!--
@@ -142,7 +158,7 @@ h1 {
       <g class="fruits">
         <!-- slot 3: Kata, live -->
         <g class="slot" transform="translate(262 146)">
-          <g class="fruit ripe" data-slug="kata" data-status="live" data-name="Kata">
+          <g class="fruit ripe" data-slug="kata" style="--i:0" data-status="live" data-name="Kata">
             <path class="stem" d="M0 0 L0 12"/>
             <g class="body" transform="translate(0 12)">
               <g class="sway">
@@ -155,7 +171,7 @@ h1 {
         </g>
         <!-- slot 7: Practice, live -->
         <g class="slot" transform="translate(152 250)">
-          <g class="fruit ripe" data-slug="practice" data-status="live" data-name="Practice">
+          <g class="fruit ripe" data-slug="practice" style="--i:1" data-status="live" data-name="Practice">
             <path class="stem" d="M0 0 L0 12"/>
             <g class="body" transform="translate(0 12)">
               <g class="sway">
@@ -168,7 +184,7 @@ h1 {
         </g>
         <!-- slot 10: Locals Only, in progress -->
         <g class="slot" transform="translate(308 286)">
-          <g class="fruit green" data-slug="locals-only" data-status="in progress" data-name="Locals Only">
+          <g class="fruit green" data-slug="locals-only" style="--i:2" data-status="in progress" data-name="Locals Only">
             <path class="stem" d="M0 0 L0 10"/>
             <g class="body" transform="translate(0 10)">
               <g class="sway">
@@ -180,7 +196,7 @@ h1 {
         </g>
         <!-- slot 4: Compost, coming soon -->
         <g class="slot" transform="translate(96 206)">
-          <g class="fruit blossom" data-slug="compost" data-status="coming soon" data-name="Compost">
+          <g class="fruit blossom" data-slug="compost" style="--i:3" data-status="coming soon" data-name="Compost">
             <path class="stem" d="M0 0 L0 8"/>
             <g class="body" transform="translate(0 8)">
               <g class="sway">
@@ -227,5 +243,34 @@ h1 {
   </ul>
 </main>
 <a class="reset" href="#" id="reset">reset growth</a>
+<script>
+(function () {
+  var tree = document.getElementById('tree');
+  var svg = tree.querySelector('svg');
+  var KEY = 'satsuma:grown';
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- growth ----
+  function remember() { try { localStorage.setItem(KEY, '1'); } catch (e) {} }
+  function grow() {
+    if (reduced) return;
+    svg.classList.remove('grow');
+    void svg.getBoundingClientRect(); // restart the animations
+    svg.classList.add('grow');
+    setTimeout(remember, 2600);
+  }
+  var grown = false;
+  try { grown = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  if (!grown) grow();
+  svg.querySelector('.trunk').addEventListener('click', grow);
+
+  // ---- prototype only: reset link ----
+  document.getElementById('reset').addEventListener('click', function (e) {
+    e.preventDefault();
+    try { localStorage.removeItem(KEY); } catch (err) {}
+    location.reload();
+  });
+})();
+</script>
 </body>
 </html>
