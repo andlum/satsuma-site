@@ -1,0 +1,38 @@
+---
+title: Studio Satsuma
+---
+<main class="home">
+  <header class="hero">
+    <h1><span class="studio">Studio</span> Satsuma</h1>
+    <p class="tagline">Small apps, grown in Brooklyn.</p>
+  </header>
+
+  {#
+    TREE PLACEHOLDER. The interactive satsuma tree (tree.njk + tree.js, build
+    step 2 of docs/spec-2026-11-rebrand.md) renders here, between the tagline
+    and the hint line. Until then this is an empty, static box of the tree's
+    final size. The project list below is the canonical content either way.
+  #}
+  <div class="tree" data-tree-placeholder></div>
+  <p class="hint">Pick a ripe one.</p>
+
+  <section class="projects" aria-labelledby="projects-heading">
+    <h2 id="projects-heading">Projects</h2>
+    <ul>
+      {% for project in collections.projects %}
+      <li>
+        {% if project.data.icon %}<img class="project-icon" src="{{ project.data.icon }}" alt="" width="40" height="40">{% endif %}
+        <span class="name">{% if project.url %}<a href="{{ project.url }}">{{ project.data.title }}</a>{% else %}{{ project.data.title }}{% endif %}</span>
+        <span class="status">{{ project.data.status | statusWord }}</span>
+        <span class="one-line">{{ project.data.oneLine }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <p class="services">
+    Shipped a prototype with AI and hit the wall? We make it scale, and help you
+    build the team that keeps it that way.
+    <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+  </p>
+</main>
