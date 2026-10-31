@@ -443,14 +443,42 @@ h1 {
     if (open && !card.contains(e.target) && !open.f.contains(e.target)) closeCard();
   });
 
+  // keyboard: Enter or Space opens directly, no hold
+  function onKey(e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    var c = e.currentTarget.__c;
+    if (c.state === 'open') closeCard();
+    else if (c.state === 'idle') { go(c, 'grabbed'); detach(c); }
+  }
+
+  // ---- wire up the fruit; everything comes from the markup ----
+  var count = { ripe: 0, green: 0, blossom: 0 };
   svg.querySelectorAll('.fruit').forEach(function (f) {
-    if (!f.classList.contains('ripe')) { f.addEventListener('pointerdown', notYet); return; }
+    var kind = f.classList.contains('ripe') ? 'ripe' : f.classList.contains('green') ? 'green' : 'blossom';
+    count[kind]++;
+    if (kind !== 'ripe') {
+      f.setAttribute('aria-hidden', 'true');
+      f.addEventListener('pointerdown', notYet);
+      return;
+    }
     f.__c = { f: f, body: f.querySelector('.body'), stem: f.querySelector('.stem'), x: 0, y: 0, state: 'idle' };
+    f.setAttribute('role', 'button');
+    f.setAttribute('tabindex', '0');
+    f.setAttribute('aria-label', f.dataset.name + ', ' + f.dataset.status + '. Pick to see details.');
     f.addEventListener('pointerdown', onDown);
     f.addEventListener('pointermove', onMove);
     f.addEventListener('pointerup', onUp);
     f.addEventListener('pointercancel', onUp);
+    f.addEventListener('keydown', onKey);
   });
+  var N = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+  var parts = [];
+  if (count.ripe) parts.push(N[count.ripe] + ' ripe');
+  if (count.green) parts.push(N[count.green] + ' still green');
+  if (count.blossom) parts.push(N[count.blossom] + (count.blossom > 1 ? ' blossoms' : ' blossom'));
+  var total = count.ripe + count.green + count.blossom;
+  svg.setAttribute('aria-label', 'A satsuma tree with ' + N[total] + ' fruit: ' + parts.join(', ') + '.');
 
   // ---- prototype only: reset link ----
   document.getElementById('reset').addEventListener('click', function (e) {
