@@ -238,10 +238,12 @@
           <path class="stem" d="M0 0 L0 10"/>
           <g class="body" transform="translate(0 10)">
             <g class="sway">
+              <g transform="scale(1.15)">{#- a touch larger than drawn, still well under a ripe one #}
               <circle class="skin" cy="10" r="10"/>
               <path class="shade" d="M-8.7 15 A10 10 0 0 0 9.4 13.4 A12.5 12.5 0 0 1 -8.7 15Z"/>
               <ellipse class="shine" cx="-4" cy="6" rx="3" ry="1.9" transform="rotate(-35 -4 6)"/>
               <path class="fleaf" d="M0 1 C2 -4 7 -5 9 -3 C6 -2 3 -1 0 1Z"/>
+              </g>
             </g>
           </g>
           {%- else %}

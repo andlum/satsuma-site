@@ -7,7 +7,7 @@
      blossom shadow, bark, ground. */
   --leaf: #7CC08E;
   --leaf-deep: #4E9B6B;
-  --unripe: #9BCB5E;
+  --unripe: #A9D352;
   --blossom-shadow: #EDD6B4;
   --bark: #8A5A3C;
   --ground: #E9D6B8;
@@ -143,6 +143,7 @@ h2 {
 .fleaf { fill: var(--celadon); }
 .fleaf.deep { fill: var(--leaf-deep); }
 .green .skin { fill: var(--unripe); }
+.green .shine { opacity: .42; }
 .blossom .petal { fill: #fff; }
 .blossom .petal-shadow { fill: var(--blossom-shadow); }
 .blossom .stamen { fill: var(--tangerine); opacity: .45; }
