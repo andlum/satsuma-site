@@ -1,0 +1,42 @@
+---
+layout: layout.html
+---
+<main class="project">
+  <nav class="crumb"><a href="/">Studio Satsuma</a></nav>
+
+  {# 1. Name and one line #}
+  <header class="project-head">
+    {% if icon %}<img class="project-icon" src="{{ icon }}" alt="" width="64" height="64">{% endif %}
+    <h1>{{ title }}</h1>
+    <p class="one-line">{{ oneLine }}</p>
+  </header>
+
+  {# 2. Who it's for, 3. What it does, 4. The interesting bit: the body of the project file #}
+  <div class="prose">
+    {{ content | safe }}
+  </div>
+
+  {# 5. Status and links #}
+  <section class="project-status" aria-labelledby="status-heading">
+    <h2 id="status-heading">Status</h2>
+    <p><span class="status" data-status="{{ status }}">{{ status | statusWord }}</span>{% if shipped %} <span class="shipped">First shipped {{ shipped }}</span>{% endif %}</p>
+    {% if links and links.length %}
+    <ul class="links">
+      {% for link in links %}
+      <li><a href="{{ link.url }}">{{ link.label }}</a></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </section>
+
+  {# 6. Screenshots, optional #}
+  {% if screenshots and screenshots.length %}
+  <section class="screenshots" aria-label="Screenshots">
+    <ul>
+      {% for shot in screenshots %}
+      <li class="phone"><img src="{{ shot.src }}" alt="{{ shot.alt }}" loading="lazy"></li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</main>

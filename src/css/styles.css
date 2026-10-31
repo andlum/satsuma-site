@@ -1,0 +1,449 @@
+:root {
+  --cream: #FFF6E9;
+  --tangerine: #E06A16;
+  --celadon: #B7E4C7;
+  --ink: #1C1410;
+  /* Tree palette (spec, "Composition"): two leaf greens, unripe green,
+     blossom shadow, bark, ground. */
+  --leaf: #7CC08E;
+  --leaf-deep: #4E9B6B;
+  --unripe: #A9D352;
+  --blossom-shadow: #EDD6B4;
+  --bark: #8A5A3C;
+  --ground: #E9D6B8;
+  --muted: #6B5E55;
+  --rule: rgba(28, 20, 16, .14);
+  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0 clamp(16px, 6vw, 96px);
+  background: var(--cream);
+  color: var(--ink);
+  font: 18px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+main, footer { position: relative; z-index: 1; }
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 96px 0 64px;
+}
+a { color: inherit; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* Headings */
+h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(64px, 11.5vw, 152px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--tangerine);
+}
+h1 .studio {
+  display: block;
+  font-style: italic;
+  font-size: 0.55em;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(28px, 3vw, 36px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.tagline {
+  margin: 0;
+  max-width: 32rem;
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.3;
+}
+
+/* Home: one composed screen. Copy on the left (wordmark, roster, offer),
+   the tree on the right. Stacked on narrow screens. */
+.home {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  grid-template-areas:
+    "hero stage"
+    "services stage";
+  align-content: center;
+  align-items: start;
+  column-gap: clamp(32px, 6vw, 96px);
+  row-gap: 48px;
+  max-width: 1200px;
+  padding: clamp(32px, 6vh, 72px) 0 40px;
+}
+.hero { grid-area: hero; display: flex; flex-direction: column; gap: 12px; }
+.hero h1 {
+  font-size: clamp(44px, 5vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--tangerine);
+  white-space: nowrap;
+}
+.hero h1 .studio { display: inline; font-style: normal; font-size: 1em; letter-spacing: inherit; color: var(--ink); }
+.hero .tagline { max-width: 24rem; font-size: clamp(18px, 1.6vw, 21px); line-height: 1.4; }
+.stage {
+  grid-area: stage;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The tree. The SVG comes from _includes/tree.njk, the behavior from
+   js/tree.js. 4:5 drawing, sized to the shorter side of the stage. */
+.tree { position: relative; width: min(100%, 580px, calc((100vh - 240px) * .8)); width: min(100%, 580px, calc((100svh - 240px) * .8)); }
+.tree > svg { display: block; width: 100%; height: auto; overflow: visible; }
+.shade { fill: var(--ground); opacity: .55; }
+.ground { fill: none; stroke: var(--ground); stroke-width: 6; stroke-linecap: round; }
+.tuft { fill: var(--leaf); }
+.root { fill: var(--bark); }
+.trunk { fill: var(--bark); cursor: pointer; }
+.trunk-shade, .branch-shade { fill: var(--ink); opacity: .14; pointer-events: none; }
+.branch { fill: var(--bark); }
+.base { fill: var(--leaf-deep); filter: brightness(.8); }
+.leaf.deep { fill: var(--leaf-deep); }
+.leaf.mid { fill: var(--leaf); }
+.leaf.hi { fill: var(--celadon); }
+.vein { fill: none; stroke: #fff; stroke-width: 1.2; stroke-linecap: round; opacity: .3; }
+.stem { fill: none; stroke: var(--bark); stroke-width: 2.5; stroke-linecap: round; transform-origin: 0 0; }
+.ripe .skin { fill: var(--tangerine); }
+.fruit .shade { fill: var(--ink); opacity: .12; }
+.fruit .shine { fill: #fff; opacity: .28; }
+.fruit .navel { fill: var(--bark); opacity: .6; }
+.fleaf { fill: var(--celadon); }
+.fleaf.deep { fill: var(--leaf-deep); }
+.green .skin { fill: var(--unripe); }
+.green .shine { opacity: .42; }
+.blossom .petal { fill: #fff; }
+.blossom .petal-shadow { fill: var(--blossom-shadow); }
+.blossom .stamen { fill: var(--tangerine); opacity: .45; }
+.blossom .eye { fill: var(--tangerine); opacity: .75; }
+
+/* Growth: static unless tree.js puts .grow on the svg (first visit, or a
+   click on the trunk). Ground, then trunk, branches, leaves, fruit. */
+.grow .ground { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .6s ease-out both; }
+.grow .shade { transform-origin: 200px 453px; animation: scaleIn .6s ease-out both; }
+.grow .root { transform-origin: 200px 451px; animation: scaleIn .4s ease-out .3s both; }
+.grow .trunk, .grow .trunk-shade { transform-origin: 200px 452px; animation: rise .7s ease-out .3s both; }
+.grow .branch { animation: scaleIn .5s ease-out both; animation-delay: calc(.85s + var(--i, 0) * .07s); }
+.grow .base, .grow .leaf { animation: scaleIn .45s cubic-bezier(.34, 1.3, .64, 1) both; animation-delay: calc(1s + var(--i, 0) * .008s); }
+.grow .tuft { animation: scaleIn .4s ease-out 2.3s both; }
+.grow .fruit { animation: scaleIn .4s ease-out both; animation-delay: calc(2.5s + var(--i, 0) * .1s); }
+.grow .fruit.ripe { animation-name: pop; animation-duration: .5s; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes pop { 0% { transform: scale(0); } 65% { transform: scale(1.18); } 85% { transform: scale(.94); } 100% { transform: scale(1); } }
+
+/* "Pick me": an arrow to the first ripe fruit, until one is picked. */
+.pick { color: var(--tangerine); animation: nudge 1.6s ease-in-out infinite; }
+.pick-halo { fill: none; stroke: var(--cream); stroke-width: 8; stroke-linecap: round; }
+.pick-line, .pick-head { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.pick-text { fill: currentColor; font: italic 22px var(--serif); }
+.grow .pick-halo, .grow .pick-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .6s ease-out 3.3s both; }
+.grow .pick-head, .grow .pick-text { opacity: 0; animation: fadeIn .4s ease-out 3.8s forwards; }
+.picked .pick { opacity: 0; transition: opacity .3s; }
+@keyframes nudge { 50% { transform: translate(1px, -4px); } }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* Picking */
+.fruit.ripe { cursor: grab; touch-action: none; outline: none; }
+.fruit.ripe:focus-visible .skin { stroke: var(--ink); stroke-width: 2; }
+.fruit .sway { transform-origin: 0 -12px; transition: transform .15s ease, filter .15s ease; }
+.fruit.ripe:hover .sway { animation: sway 1.2s ease-in-out infinite; }
+.fruit[data-state=grabbed] .sway, .fruit[data-state=dragging] .sway { animation: none; transform: translateY(-4px); filter: drop-shadow(0 5px 4px rgba(28, 20, 16, .3)); }
+.fruit[data-state=grabbed], .fruit[data-state=dragging], .fruit[data-state=detached], .fruit[data-state=open] { cursor: grabbing; }
+.fruit[data-state=detached] .sway, .fruit[data-state=open] .sway { animation: none; filter: drop-shadow(0 8px 6px rgba(28, 20, 16, .22)); }
+.fruit[data-state=detached] .body, .fruit[data-state=open] .body { transition: transform .22s ease-out; }
+.fruit.wobble .sway { animation: wobble .5s ease-in-out; }
+.stem.snap { animation: snap .25s ease-out forwards; }
+@keyframes sway { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
+@keyframes wobble { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-8deg); } 70% { transform: rotate(6deg); } }
+@keyframes snap { to { transform: scaleY(.15); opacity: 0; } }
+
+/* "Locals Only · in progress · not ripe yet" */
+.tip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  pointer-events: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 13px;
+}
+
+/* Card: a modal dialog over a cream wash. Centered on desktop, a bottom
+   sheet on phones. */
+.card {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(440px, calc(100% - 32px));
+  padding: 32px 32px 28px;
+  border: 0;
+  border-radius: 22px;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 24px 64px rgba(28, 20, 16, .22);
+  font-size: 17px;
+  line-height: 1.5;
+  outline: none;
+}
+.card::backdrop { background: rgba(255, 246, 233, .72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.card[open] { animation: cardIn .3s cubic-bezier(.34, 1.3, .64, 1); }
+@keyframes cardIn { from { opacity: 0; transform: translateY(16px) scale(.96); } }
+.card-fruit { display: block; width: 44px; height: 44px; margin-bottom: 14px; }
+.card-fruit circle { fill: var(--tangerine); }
+.card-fruit path { fill: var(--celadon); }
+.card h2 { margin: 0 0 8px; font-size: 36px; }
+.card .card-status { margin: 0 0 14px; }
+.card p { margin: 0 0 16px; }
+.card .links { margin: 4px 0 0; gap: 10px; }
+.card .links a:first-child { background: var(--tangerine); color: #fff; }
+.card .close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font: 26px/1 var(--sans);
+  cursor: pointer;
+}
+.card .close:hover { background: var(--cream); }
+.card .close:focus-visible, .card a:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--celadon); }
+@media (max-width: 899px) {
+  .home {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "hero" "stage" "services";
+    align-content: start;
+    row-gap: 32px;
+    padding-top: 40px;
+  }
+  .hero h1 { white-space: normal; }
+  .stage { justify-self: stretch; }
+  .tree { width: min(100%, 440px); }
+}
+@media (max-width: 639px) {
+  .card {
+    inset: auto 0 0 0;
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    border-radius: 22px 22px 0 0;
+    padding-bottom: calc(28px + env(safe-area-inset-bottom));
+  }
+  .card[open] { animation-name: slideUp; }
+}
+@keyframes slideUp { from { transform: translateY(100%); } }
+
+/* Reduced motion: the tree is always grown and still; picking opens
+   instantly (tree.js checks the same query). */
+@media (prefers-reduced-motion: reduce) {
+  .tree *, .tree *::before { animation: none !important; transition: none !important; }
+}
+
+/* Roster: the canonical list, always rendered. */
+.projects h2 {
+  margin: 0 0 6px;
+  font: 500 13px/1.5 var(--sans);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.projects ul { list-style: none; margin: 0; padding: 0; max-width: 32rem; }
+.projects li {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+  align-items: baseline;
+  column-gap: 14px;
+  row-gap: 2px;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule);
+}
+.projects li:last-child { border-bottom: 1px solid var(--rule); }
+.projects .project-icon { grid-row: 1 / span 2; align-self: center; width: 40px; height: 40px; border-radius: 10px; }
+.projects li:has(.project-icon) { grid-template-columns: auto auto auto; }
+.projects .name { font-family: var(--serif); font-size: 26px; line-height: 1.1; }
+.projects .name a { color: var(--tangerine); text-decoration: none; }
+.projects .name a:hover,
+.projects .name a:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+.projects .one-line { grid-column: 1 / -1; margin: 0; font-size: 16px; color: var(--muted); }
+.projects li:has(.project-icon) .one-line { grid-column: 2 / -1; }
+
+/* Status: a dot in the fruit's color, then the plain word. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.status::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--tangerine); }
+.status[data-status=in-progress]::before { background: var(--unripe); }
+.status[data-status=coming-soon]::before { background: #fff; box-shadow: inset 0 0 0 1.5px var(--blossom-shadow); }
+
+/* The offer */
+.services {
+  grid-area: services;
+  margin: 0;
+  max-width: 26rem;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.services a {
+  color: var(--tangerine);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+.services a:hover,
+.services a:focus-visible { text-decoration-color: var(--celadon); }
+
+/* Project pages */
+.project { max-width: 44rem; gap: 36px; }
+.crumb { font-size: 15px; }
+.crumb a {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
+}
+.crumb a::before { content: "← "; color: var(--tangerine); }
+.crumb a:hover,
+.crumb a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.project-head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.project-head .project-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+}
+.project-head h1 {
+  font-size: clamp(56px, 9vw, 104px);
+}
+.one-line {
+  margin: 0;
+  max-width: 32rem;
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.3;
+}
+.prose { display: flex; flex-direction: column; gap: 12px; }
+.prose h2 { margin-top: 24px; }
+.prose h2:first-child { margin-top: 0; }
+.prose p, .prose ul { margin: 0; }
+.prose ul { padding-left: 1.2em; }
+.prose li { margin: 4px 0; }
+.project-status p { margin: 16px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.shipped { font-size: 16px; }
+.links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 0;
+}
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--celadon);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
+}
+.links a:hover,
+.links a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.screenshots ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+.screenshots .phone {
+  width: min(100%, 260px);
+  padding: 12px;
+  border: 2px solid var(--celadon);
+  border-radius: 36px;
+  background: var(--cream);
+}
+.screenshots img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 24px;
+}
+
+/* Footer */
+footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 0 28px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--muted);
+}
+footer .heart {
+  color: var(--tangerine);
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  main { gap: 22px; padding: 64px 0 40px; }
+  .projects .name { font-size: 24px; }
+  footer { font-size: 14px; }
+}
