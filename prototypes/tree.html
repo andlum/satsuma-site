@@ -1,0 +1,231 @@
+<!doctype html>
+<!--
+  Satsuma tree prototype. Throwaway, single file, no build.
+  Spec: docs/spec-2026-11-rebrand.md, "The tree".
+
+  Prototype-only parts (not for src/js/tree.js):
+  - the four fake projects in the markup (fruit <g>s, <template>s, roster <ul>);
+    the real build renders these from the Eleventy `projects` collection
+  - the "reset growth" link in the corner
+  Everything the JS reads comes from the DOM (data-slug, data-status,
+  data-name, a <template data-slug> per project), so it lifts as-is.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Satsuma tree prototype</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='17' r='12' fill='%23E06A16'/%3E%3Cpath d='M16 5c2-3 5-3 6-2-2 0-4 1-6 2z' fill='%23B7E4C7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FFF6E9;
+  --tangerine: #E06A16;
+  --mint: #B7E4C7;
+  --leaf: #7CC08E;
+  --leaf-deep: #4E9B6B;
+  --unripe: #9BCB5E;
+  --blossom: #FFFFFF;
+  --blossom-shadow: #EDD6B4;
+  --bark: #8A5A3C;
+  --ground: #E9D6B8;
+  --ink: #1C1410;
+  --ink-soft: #6B5B4E;
+  --serif: "Instrument Serif", Georgia, serif;
+  --sans: "Instrument Sans", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font: 18px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  padding: 0 16px 80px;
+}
+main { max-width: 640px; margin: 0 auto; }
+.eyebrow { margin: 40px 0 0; font-size: 15px; letter-spacing: .02em; color: var(--ink-soft); }
+h1 {
+  margin: 4px 0 8px;
+  font: 400 clamp(40px, 9vw, 64px)/1 var(--serif);
+  letter-spacing: -0.02em;
+  color: var(--tangerine);
+}
+.hint { margin: 0 0 32px; text-align: center; color: var(--ink-soft); font-size: 16px; }
+
+/* ---- tree ---- */
+.tree { position: relative; max-width: 640px; margin: 0 auto; }
+.tree svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ground { fill: none; stroke: var(--ground); stroke-width: 7; stroke-linecap: round; }
+.root { fill: var(--bark); }
+.trunk { fill: none; stroke: var(--bark); stroke-width: 22; stroke-linecap: round; }
+.branch { fill: none; stroke: var(--bark); stroke-width: 9; stroke-linecap: round; }
+.leaf.deep { fill: var(--leaf-deep); }
+.leaf.mid { fill: var(--leaf); }
+.leaf.hi { fill: var(--mint); }
+
+.stem { fill: none; stroke: var(--bark); stroke-width: 2.5; stroke-linecap: round; }
+.ripe .skin { fill: var(--tangerine); }
+.ripe .shine { fill: #fff; opacity: .18; }
+.fleaf { fill: var(--mint); }
+.green .skin { fill: var(--unripe); }
+.green .rim { fill: none; stroke: #fff; stroke-width: 1.5; opacity: .45; }
+.blossom .petal { fill: var(--blossom); }
+.blossom .petal-shadow { fill: var(--blossom-shadow); }
+.blossom .eye { fill: #F2C14E; }
+
+/* ---- roster ---- */
+.roster { list-style: none; margin: 0; padding: 0 0 0 0; border-top: 1px solid #EBDCC6; }
+.roster li { display: flex; gap: 12px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #EBDCC6; }
+.roster .name { font: 400 26px/1.1 var(--serif); }
+.roster .status { font-size: 14px; color: var(--ink-soft); text-transform: lowercase; }
+.roster .line { flex: 1 1 100%; margin: 0; font-size: 16px; color: var(--ink-soft); }
+.roster a { color: var(--tangerine); }
+
+/* prototype only */
+.reset { position: fixed; right: 12px; bottom: 10px; font-size: 12px; color: var(--ink-soft); opacity: .6; }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Studio Satsuma</p>
+  <h1>Small apps, grown in Brooklyn.</h1>
+
+  <div class="tree" id="tree">
+    <svg viewBox="0 0 400 500" role="img" aria-label="A satsuma tree.">
+      <path class="ground" d="M34 454 Q200 442 366 454"/>
+      <ellipse class="root" cx="200" cy="449" rx="24" ry="7"/>
+      <path class="trunk" d="M200 450 C203 420 196 385 200 340"/>
+      <g class="branches">
+        <path class="branch" d="M200 352 C178 330 140 310 112 272"/>
+        <path class="branch" d="M200 346 C222 322 262 300 296 268"/>
+        <path class="branch" d="M200 344 C198 300 186 262 168 208"/>
+        <path class="branch" d="M200 342 C208 296 232 250 252 196"/>
+        <path class="branch" d="M200 356 C236 352 268 334 302 312"/>
+      </g>
+
+      <g class="leaves back">
+        <circle class="leaf deep" cx="200" cy="150" r="62" style="transform-origin:200px 206px"/>
+        <circle class="leaf deep" cx="130" cy="195" r="58" style="transform-origin:153px 242px"/>
+        <circle class="leaf deep" cx="270" cy="195" r="58" style="transform-origin:247px 242px"/>
+        <circle class="leaf deep" cx="105" cy="265" r="52" style="transform-origin:142px 294px"/>
+        <circle class="leaf deep" cx="295" cy="265" r="52" style="transform-origin:258px 294px"/>
+        <circle class="leaf deep" cx="200" cy="295" r="60" style="transform-origin:200px 349px"/>
+        <circle class="leaf deep" cx="160" cy="240" r="55" style="transform-origin:179px 286px"/>
+        <circle class="leaf deep" cx="245" cy="240" r="55" style="transform-origin:224px 285px"/>
+      </g>
+
+
+      <g class="leaves front">
+        <circle class="leaf mid" cx="200" cy="130" r="40" style="transform-origin:200px 166px"/>
+        <circle class="leaf mid" cx="150" cy="170" r="38" style="transform-origin:160px 203px"/>
+        <circle class="leaf mid" cx="255" cy="172" r="38" style="transform-origin:244px 204px"/>
+        <circle class="leaf mid" cx="110" cy="225" r="36" style="transform-origin:130px 250px"/>
+        <circle class="leaf mid" cx="290" cy="225" r="36" style="transform-origin:270px 250px"/>
+        <circle class="leaf mid" cx="165" cy="300" r="36" style="transform-origin:187px 324px"/>
+        <circle class="leaf mid" cx="240" cy="300" r="36" style="transform-origin:217px 322px"/>
+        <circle class="leaf mid" cx="200" cy="213" r="46" style="transform-origin:200px 254px"/>
+        <circle class="leaf hi" cx="188" cy="116" r="11" style="transform-origin:189px 126px"/>
+        <circle class="leaf hi" cx="138" cy="158" r="8" style="transform-origin:140px 165px"/>
+        <circle class="leaf hi" cx="276" cy="226" r="8" style="transform-origin:271px 231px"/>
+        <circle class="leaf hi" cx="124" cy="300" r="7" style="transform-origin:128px 304px"/>
+      </g>
+
+      <!--
+        Slot anchors (stem tops), chosen so any subset reads balanced:
+         1 (200,118)   2 (138,146)   3 (262,146)   4 (96,206)
+         5 (304,206)   6 (200,186)   7 (152,250)   8 (248,250)
+         9 (92,286)   10 (308,286)  11 (168,328)  12 (236,328)
+      -->
+      <g class="fruits">
+        <!-- slot 3: Kata, live -->
+        <g class="slot" transform="translate(262 146)">
+          <g class="fruit ripe" data-slug="kata" data-status="live" data-name="Kata">
+            <path class="stem" d="M0 0 L0 12"/>
+            <g class="body" transform="translate(0 12)">
+              <g class="sway">
+                <circle class="skin" cy="14" r="14"/>
+                <circle class="shine" cx="-5" cy="9" r="4"/>
+                <path class="fleaf" d="M0 1c2-4 6-4 8-3-3 0-5 1-8 3z"/>
+              </g>
+            </g>
+          </g>
+        </g>
+        <!-- slot 7: Practice, live -->
+        <g class="slot" transform="translate(152 250)">
+          <g class="fruit ripe" data-slug="practice" data-status="live" data-name="Practice">
+            <path class="stem" d="M0 0 L0 12"/>
+            <g class="body" transform="translate(0 12)">
+              <g class="sway">
+                <circle class="skin" cy="14" r="14"/>
+                <circle class="shine" cx="-5" cy="9" r="4"/>
+                <path class="fleaf" d="M0 1c2-4 6-4 8-3-3 0-5 1-8 3z"/>
+              </g>
+            </g>
+          </g>
+        </g>
+        <!-- slot 10: Locals Only, in progress -->
+        <g class="slot" transform="translate(308 286)">
+          <g class="fruit green" data-slug="locals-only" data-status="in progress" data-name="Locals Only">
+            <path class="stem" d="M0 0 L0 10"/>
+            <g class="body" transform="translate(0 10)">
+              <g class="sway">
+                <circle class="skin" cy="10" r="10"/>
+                <circle class="rim" cy="10" r="9.5"/>
+              </g>
+            </g>
+          </g>
+        </g>
+        <!-- slot 4: Compost, coming soon -->
+        <g class="slot" transform="translate(96 206)">
+          <g class="fruit blossom" data-slug="compost" data-status="coming soon" data-name="Compost">
+            <path class="stem" d="M0 0 L0 8"/>
+            <g class="body" transform="translate(0 8)">
+              <g class="sway">
+                <g class="petal-shadow" transform="translate(1.2 9.5)">
+                  <circle cy="-5.5" r="5"/><circle cx="5.2" cy="-1.7" r="5"/><circle cx="3.2" cy="4.5" r="5"/>
+                  <circle cx="-3.2" cy="4.5" r="5"/><circle cx="-5.2" cy="-1.7" r="5"/>
+                </g>
+                <g class="petal" transform="translate(0 8)">
+                  <circle cy="-5.5" r="5"/><circle cx="5.2" cy="-1.7" r="5"/><circle cx="3.2" cy="4.5" r="5"/>
+                  <circle cx="-3.2" cy="4.5" r="5"/><circle cx="-5.2" cy="-1.7" r="5"/>
+                </g>
+                <circle class="eye" cy="8" r="2.4"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+  <p class="hint">Hold a ripe one and pull.</p>
+
+  <!-- card contents, one per project; the real build emits these from front matter -->
+  <template data-slug="kata">
+    <h2>Kata</h2>
+    <p class="status">Live · iOS</p>
+    <p>A workout log and routine library for the multisport athlete, with an MCP connection so your assistant can read your training and write your routines.</p>
+    <p class="links"><a href="#">Project page</a><a href="#">App Store</a></p>
+  </template>
+  <template data-slug="practice">
+    <h2>Practice</h2>
+    <p class="status">Live · web</p>
+    <p>A quiet timer for daily practice: one thing, every day, counted.</p>
+    <p class="links"><a href="#">Project page</a><a href="#">Open the app</a></p>
+  </template>
+
+  <ul class="roster" aria-label="Projects">
+    <li><span class="name">Kata</span><span class="status">Live</span>
+      <p class="line">A workout log and routine library for the multisport athlete, with an MCP connection so your assistant can read your training and write your routines. <a href="#">Project page</a></p></li>
+    <li><span class="name">Practice</span><span class="status">Live</span>
+      <p class="line">A quiet timer for daily practice: one thing, every day, counted. <a href="#">Project page</a></p></li>
+    <li><span class="name">Locals Only</span><span class="status">In progress</span>
+      <p class="line">A neighborhood guide written by the people who live there.</p></li>
+    <li><span class="name">Compost</span><span class="status">Coming soon</span></li>
+  </ul>
+</main>
+<a class="reset" href="#" id="reset">reset growth</a>
+</body>
+</html>
