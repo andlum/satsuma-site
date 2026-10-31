@@ -1,0 +1,23 @@
+{
+  "name": "satsuma-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "satsuma.works — the public site of Studio Satsuma",
+  "scripts": {
+    "build": "eleventy",
+    "dev": "eleventy --serve --watch --port=8889",
+    "serve": "eleventy --serve --port=8889"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andlum/satsuma-site.git"
+  },
+  "author": "Satsuma LLC",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  }
+}
