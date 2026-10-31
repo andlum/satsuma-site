@@ -1,8 +1,35 @@
 # satsuma.works
 
-Landing page for Satsuma, hosted on GitHub Pages. Plain HTML and CSS, no
-build step. Edit `index.html` and `style.css`, commit, push; Pages redeploys
-in about a minute.
+The public site of Studio Satsuma, hosted on GitHub Pages. It is an
+[Eleventy 3](https://www.11ty.dev/) site that mirrors `andlum.github.io`:
+`src/` in, `public/` out, deployed by the GitHub Actions workflow in
+`.github/workflows/build.yml` on every push to `main`.
+
+The full design and copy spec is `docs/spec-2026-11-rebrand.md`.
+
+## Working on the site
+
+```bash
+npm install
+npm run dev      # http://localhost:8889, rebuilds on save
+npm run build    # writes the site to public/
+```
+
+Layout:
+
+- `src/index.njk` is the homepage. `src/_includes/layout.html` wraps every
+  page (fonts, favicon, theme color, Cloudflare beacon, footer).
+- `src/projects/*.md` is the roster: one file per project, front matter as in
+  the spec (`title`, `slug`, `status`, `oneLine`, `platform`, `links`, `slot`,
+  `icon`, `draft`). Live projects get a page at `/projects/<slug>/` from
+  `src/_includes/project.html`; every non-draft project appears in the
+  homepage list. `draft: true` keeps a file out of the build entirely. Two
+  projects on the same `slot` fail the build.
+- `src/css/styles.css` is the one stylesheet, served with a content hash from
+  `src/_data/assets.js`. `src/img` and `src/js` are copied through as-is.
+
+Placeholders in square brackets (`[one line]`, `[WHO IT'S FOR: ...]`) are
+roster facts still to be filled in.
 
 ## One-time setup (owner runs these)
 
@@ -13,16 +40,22 @@ cd ~/Dev/satsuma-site
 gh repo create satsuma-site --public --source=. --remote=origin --push
 ```
 
-### 2. Enable GitHub Pages
+### 2. Enable GitHub Pages, deploying from GitHub Actions
 
-Either in the browser: repo **Settings > Pages** > Build and deployment >
-Source **Deploy from a branch**, branch **main**, folder **/ (root)**, Save.
+The site is built by Actions, so Pages must take its content from the
+workflow rather than from a branch. In the browser: repo **Settings > Pages**
+> Build and deployment > Source **GitHub Actions**. No workflow template is
+needed; `.github/workflows/build.yml` is already in the repo.
 
-Or from the terminal:
+Or from the terminal (use `PUT` instead of `POST` if Pages is already on):
 
 ```bash
-gh api -X POST repos/andlum/satsuma-site/pages -f 'source[branch]=main' -f 'source[path]=/'
+gh api -X POST repos/andlum/satsuma-site/pages -f 'build_type=workflow'
 ```
+
+If Pages was previously set to **Deploy from a branch** (the pre-Eleventy
+setup), switch it to **GitHub Actions** the same way; the first push to
+`main` afterwards runs the workflow and publishes `public/`.
 
 ### 3. Custom domain
 
@@ -88,7 +121,7 @@ moving DNS to Cloudflare. To finish:
    **Add a site**, enter `satsuma.works`, and choose the manual
    JavaScript snippet option (not automatic setup, since the domain is
    not proxied by Cloudflare yet).
-2. The token is already in `index.html`. If you ever re-create the site
+2. The token is already in `src/_includes/layout.html`. If you ever re-create the site
    in Cloudflare, copy the new token into the `data-cf-beacon` attribute.
 3. Data appears in the same Web Analytics page within a few minutes of
    the first visit.
