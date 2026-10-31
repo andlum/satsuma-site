@@ -113,7 +113,38 @@ h1 {
   position: absolute; transform: translate(-50%, -100%); white-space: nowrap; pointer-events: none;
   padding: 6px 10px; border-radius: 8px; background: var(--ink); color: var(--cream); font-size: 13px;
 }
-.card { position: absolute; z-index: 2; padding: 18px 20px 16px; border-radius: 14px; background: #fff; box-shadow: 0 12px 32px rgba(28,20,16,.18); }
+
+/* ---- card ---- */
+.card {
+  position: absolute; z-index: 2; width: 320px; max-width: 100%;
+  padding: 18px 44px 16px 20px; border-radius: 14px; background: #fff; color: var(--ink);
+  box-shadow: 0 12px 32px rgba(28,20,16,.18); font-size: 16px; line-height: 1.45; outline: none;
+}
+.card::before {
+  content: ""; position: absolute; top: -7px; left: var(--arrow, 50%); width: 16px; height: 16px;
+  background: #fff; border-radius: 3px; transform: translateX(-50%) rotate(45deg);
+}
+.card h2 { margin: 0 0 2px; font: 400 28px/1.1 var(--serif); }
+.card .status { margin: 0 0 10px; font-size: 13px; color: var(--ink-soft); }
+.card p { margin: 0 0 12px; }
+.card .links { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.card .links a { padding: 8px 14px; border-radius: 999px; background: var(--tangerine); color: #fff; text-decoration: none; font-weight: 500; font-size: 15px; }
+.card .links a + a { background: var(--cream); color: var(--ink); }
+.card .close {
+  position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border: 0; border-radius: 50%;
+  background: transparent; color: var(--ink-soft); font: 24px/1 var(--sans); cursor: pointer;
+}
+.card .close:hover { background: var(--cream); }
+.card:focus-visible, .card .close:focus-visible, .card a:focus-visible { box-shadow: 0 0 0 3px var(--mint); }
+@media (max-width: 639px) {
+  .card {
+    position: fixed; inset: auto 0 0 0 !important; width: auto !important; max-width: none;
+    border-radius: 18px 18px 0 0; padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    animation: slideUp .3s ease-out;
+  }
+  .card::before { display: none; }
+}
+@keyframes slideUp { from { transform: translateY(100%); } }
 
 /* ---- roster ---- */
 .roster { list-style: none; margin: 0; padding: 0 0 0 0; border-top: 1px solid #EBDCC6; }
@@ -238,7 +269,7 @@ h1 {
         </g>
       </g>
     </svg>
-    <div class="card" id="card" hidden>
+    <div class="card" id="card" role="dialog" aria-labelledby="card-title" tabindex="-1" hidden>
       <div class="card-body"></div>
       <button class="close" type="button" aria-label="Close">×</button>
     </div>
@@ -297,6 +328,7 @@ h1 {
   var card = document.getElementById('card');
   var tip = document.getElementById('tip');
   var open = null; // ctx of the fruit whose card is showing
+  var narrow = matchMedia('(max-width: 639px)');
   var STATES = ['pressed', 'grabbed', 'dragging', 'detached', 'open', 'returning'];
 
   function unit() { return svg.viewBox.baseVal.width / svg.getBoundingClientRect().width; }
@@ -381,9 +413,21 @@ h1 {
     var body = card.querySelector('.card-body');
     body.innerHTML = '';
     if (t) body.appendChild(t.content.cloneNode(true));
+    body.querySelector('h2').id = 'card-title';
     tree.classList.add('has-open');
     card.hidden = false;
     go(c, 'open');
+    place(c);
+    card.focus();
+  }
+  // desktop: anchored under the fruit; phones get the bottom sheet from CSS
+  function place(c) {
+    if (narrow.matches) return;
+    var p = at(c.f, c.x, STEM + c.y + 36); // 28 = bottom of the fruit, 8 = gap
+    var w = Math.min(320, tree.clientWidth);
+    var left = Math.max(0, Math.min(tree.clientWidth - w, p.x - w / 2));
+    card.style.left = left + 'px'; card.style.top = p.y + 'px'; card.style.width = w + 'px';
+    card.style.setProperty('--arrow', (p.x - left) + 'px');
   }
   function closeCard(refocus) {
     if (!open) return;
@@ -394,6 +438,10 @@ h1 {
     if (refocus !== false) c.f.focus();
   }
   card.querySelector('.close').addEventListener('click', function () { closeCard(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCard(); });
+  document.addEventListener('pointerdown', function (e) {
+    if (open && !card.contains(e.target) && !open.f.contains(e.target)) closeCard();
+  });
 
   svg.querySelectorAll('.fruit').forEach(function (f) {
     if (!f.classList.contains('ripe')) { f.addEventListener('pointerdown', notYet); return; }
