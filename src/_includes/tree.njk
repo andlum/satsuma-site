@@ -282,7 +282,7 @@
   {%- if project.data.status == "live" %}
   <template data-slug="{{ project.data.slug }}">
     <h2>{{ project.data.title }}</h2>
-    <p class="card-status"><span class="status">{{ project.data.status | statusWord }}</span></p>
+    <p class="card-status"><span class="status" data-status="{{ project.data.status }}">{{ project.data.status | statusWord }}</span></p>
     <p>{{ project.data.oneLine }}</p>
     {%- if project.url or (project.data.links and project.data.links.length) %}
     <p class="links">

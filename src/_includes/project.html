@@ -19,7 +19,7 @@ layout: layout.html
   {# 5. Status and links #}
   <section class="project-status" aria-labelledby="status-heading">
     <h2 id="status-heading">Status</h2>
-    <p><span class="status">{{ status | statusWord }}</span>{% if shipped %} <span class="shipped">First shipped {{ shipped }}</span>{% endif %}</p>
+    <p><span class="status" data-status="{{ status }}">{{ status | statusWord }}</span>{% if shipped %} <span class="shipped">First shipped {{ shipped }}</span>{% endif %}</p>
     {% if links and links.length %}
     <ul class="links">
       {% for link in links %}

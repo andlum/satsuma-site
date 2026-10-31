@@ -11,6 +11,8 @@
   --blossom-shadow: #EDD6B4;
   --bark: #8A5A3C;
   --ground: #E9D6B8;
+  --muted: #6B5E55;
+  --rule: rgba(28, 20, 16, .14);
   --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
   --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -75,48 +77,51 @@ h2 {
   line-height: 1.3;
 }
 
-/* Home: the first screen is a stage the width of the window. The tree
-   stands in the middle, the wordmark sits in the bottom-left corner, the
-   hint in the bottom-right. */
-.home { padding-top: 0; }
+/* Home: one composed screen. Copy on the left (wordmark, roster, offer),
+   the tree on the right. Stacked on narrow screens. */
+.home {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  grid-template-areas:
+    "hero stage"
+    "projects stage"
+    "services stage";
+  align-content: center;
+  align-items: start;
+  column-gap: clamp(32px, 6vw, 96px);
+  row-gap: 36px;
+  max-width: 1200px;
+  padding: clamp(32px, 6vh, 72px) 0 40px;
+}
+.hero { grid-area: hero; display: flex; flex-direction: column; gap: 12px; }
+.hero h1 {
+  font-size: clamp(44px, 5vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--tangerine);
+  white-space: nowrap;
+}
+.hero h1 .studio { display: inline; font-style: normal; font-size: 1em; letter-spacing: inherit; color: var(--ink); }
+.hero .tagline { max-width: 24rem; font-size: clamp(18px, 1.6vw, 21px); line-height: 1.4; }
 .stage {
-  --pad: clamp(16px, 4vw, 48px);
-  position: relative;
+  grid-area: stage;
+  align-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 100vw;
-  min-height: 100vh;
-  min-height: 100svh;
-  margin: 0 calc(50% - 50vw);
-  padding: 32px var(--pad) 140px;
+  gap: 8px;
 }
-.hero {
-  position: absolute;
-  left: var(--pad);
-  bottom: var(--pad);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.hero h1 { font-size: clamp(40px, 5.2vw, 72px); white-space: nowrap; }
-.hero h1 .studio { display: inline; font-size: .8em; margin-right: .06em; }
-.hero .tagline { max-width: 22rem; font-size: clamp(17px, 1.5vw, 22px); }
 .hint {
-  position: absolute;
-  right: var(--pad);
-  bottom: calc(var(--pad) + 4px);
   margin: 0;
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(20px, 2vw, 26px);
+  font-size: clamp(18px, 1.7vw, 22px);
   color: var(--tangerine);
 }
 
 /* The tree. The SVG comes from _includes/tree.njk, the behavior from
    js/tree.js. 4:5 drawing, sized to the shorter side of the stage. */
-.tree { position: relative; width: min(100%, 600px, 64svh); }
+.tree { position: relative; width: min(100%, 580px, calc((100vh - 240px) * .8)); width: min(100%, 580px, calc((100svh - 240px) * .8)); }
 .tree > svg { display: block; width: 100%; height: auto; overflow: visible; }
 .shade { fill: var(--ground); opacity: .55; }
 .ground { fill: none; stroke: var(--ground); stroke-width: 6; stroke-linecap: round; }
@@ -230,9 +235,19 @@ h2 {
 }
 .card .close:hover { background: var(--cream); }
 .card .close:focus-visible, .card a:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--celadon); }
+@media (max-width: 899px) {
+  .home {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "hero" "stage" "projects" "services";
+    align-content: start;
+    row-gap: 32px;
+    padding-top: 40px;
+  }
+  .hero h1 { white-space: normal; }
+  .stage { justify-self: stretch; }
+  .tree { width: min(100%, 440px); }
+}
 @media (max-width: 639px) {
-  .stage { padding-bottom: 150px; }
-  .hint { position: static; margin-top: 8px; }
   .card {
     inset: auto 0 0 0;
     margin: 0;
@@ -251,67 +266,58 @@ h2 {
   .tree *, .tree *::before { animation: none !important; transition: none !important; }
 }
 
-/* Project list: the canonical roster, always rendered. */
-.projects { margin-top: 16px; }
-.projects ul {
-  list-style: none;
-  margin: 20px 0 0;
-  padding: 0;
-  max-width: 44rem;
+/* Roster: the canonical list, always rendered. */
+.projects { grid-area: projects; }
+.projects h2 {
+  margin: 0 0 6px;
+  font: 500 13px/1.5 var(--sans);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
+.projects ul { list-style: none; margin: 0; padding: 0; max-width: 32rem; }
 .projects li {
   display: grid;
   grid-template-columns: auto auto;
   justify-content: start;
   align-items: baseline;
   column-gap: 14px;
-  row-gap: 4px;
-  padding: 18px 0;
-  border-top: 2px solid var(--celadon);
+  row-gap: 2px;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule);
 }
-.projects li:last-child { border-bottom: 2px solid var(--celadon); }
-.projects .project-icon {
-  grid-row: 1 / span 2;
-  align-self: start;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-}
+.projects li:last-child { border-bottom: 1px solid var(--rule); }
+.projects .project-icon { grid-row: 1 / span 2; align-self: center; width: 40px; height: 40px; border-radius: 10px; }
 .projects li:has(.project-icon) { grid-template-columns: auto auto auto; }
-.projects .name {
-  font-family: var(--serif);
-  font-size: 28px;
-  line-height: 1.1;
-}
-.projects .name a {
-  color: var(--tangerine);
-  text-decoration: none;
-}
+.projects .name { font-family: var(--serif); font-size: 26px; line-height: 1.1; }
+.projects .name a { color: var(--tangerine); text-decoration: none; }
 .projects .name a:hover,
 .projects .name a:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+.projects .one-line { grid-column: 1 / -1; margin: 0; font-size: 16px; color: var(--muted); }
+.projects li:has(.project-icon) .one-line { grid-column: 2 / -1; }
+
+/* Status: a dot in the fruit's color, then the plain word. */
 .status {
-  display: inline-block;
-  padding: 2px 12px;
-  border-radius: 999px;
-  background: var(--celadon);
-  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 14px;
   font-weight: 500;
   line-height: 1.5;
   white-space: nowrap;
+  color: var(--muted);
 }
-.projects .one-line {
-  grid-column: 1 / -1;
-  margin: 0;
-}
-.projects li:has(.project-icon) .one-line { grid-column: 2 / -1; }
+.status::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--tangerine); }
+.status[data-status=in-progress]::before { background: var(--unripe); }
+.status[data-status=coming-soon]::before { background: #fff; box-shadow: inset 0 0 0 1.5px var(--blossom-shadow); }
 
-/* Services line */
+/* The offer */
 .services {
-  margin: 16px 0 0;
-  max-width: 36rem;
-  font-size: clamp(20px, 2vw, 24px);
-  line-height: 1.4;
+  grid-area: services;
+  margin: 0;
+  max-width: 26rem;
+  font-size: 17px;
+  line-height: 1.5;
 }
 .services a {
   color: var(--tangerine);
@@ -411,12 +417,13 @@ footer {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
-  max-width: 1100px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 24px 0 32px;
-  border-top: 2px solid var(--celadon);
-  font-size: 15px;
+  padding: 20px 0 28px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  color: var(--muted);
 }
 footer .heart {
   color: var(--tangerine);
