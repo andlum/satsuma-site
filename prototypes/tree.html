@@ -97,14 +97,14 @@ h1 {
 .fruit.ripe:focus-visible .skin { stroke: var(--ink); stroke-width: 2; }
 .fruit .sway { transform-origin: 0 -12px; transition: transform .15s ease, filter .15s ease; }
 .fruit.ripe:hover .sway { animation: sway 1.2s ease-in-out infinite; }
-.fruit.is-grabbed .sway, .fruit.is-dragging .sway { animation: none; transform: translateY(-4px); filter: drop-shadow(0 5px 4px rgba(28,20,16,.3)); }
-.fruit.is-grabbed, .fruit.is-dragging, .fruit.is-detached, .fruit.is-open { cursor: grabbing; }
-.fruit.is-detached .sway, .fruit.is-open .sway { animation: none; filter: drop-shadow(0 8px 6px rgba(28,20,16,.22)); }
-.fruit.is-detached .body, .fruit.is-open .body { transition: transform .22s ease-out; }
+.fruit[data-state=grabbed] .sway, .fruit[data-state=dragging] .sway { animation: none; transform: translateY(-4px); filter: drop-shadow(0 5px 4px rgba(28,20,16,.3)); }
+.fruit[data-state=grabbed], .fruit[data-state=dragging], .fruit[data-state=detached], .fruit[data-state=open] { cursor: grabbing; }
+.fruit[data-state=detached] .sway, .fruit[data-state=open] .sway { animation: none; filter: drop-shadow(0 8px 6px rgba(28,20,16,.22)); }
+.fruit[data-state=detached] .body, .fruit[data-state=open] .body { transition: transform .22s ease-out; }
 .fruit.wobble .sway { animation: wobble .5s ease-in-out; }
 .stem { transform-origin: 0 0; }
 .stem.snap { animation: snap .25s ease-out forwards; }
-.tree.has-open .fruit:not(.is-open) { opacity: .7; transition: opacity .2s; }
+.tree.has-open .fruit:not([data-state=open]) { opacity: .7; transition: opacity .2s; }
 @keyframes sway { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
 @keyframes wobble { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-8deg); } 70% { transform: rotate(6deg); } }
 @keyframes snap { to { transform: scaleY(.15); opacity: 0; } }
@@ -310,13 +310,12 @@ h1 {
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---- growth ----
-  function remember() { try { localStorage.setItem(KEY, '1'); } catch (e) {} }
   function grow() {
     if (reduced) return;
     svg.classList.remove('grow');
     void svg.getBoundingClientRect(); // restart the animations
     svg.classList.add('grow');
-    setTimeout(remember, 2600);
+    setTimeout(function () { try { localStorage.setItem(KEY, '1'); } catch (e) {} }, 2600);
   }
   var grown = false;
   try { grown = localStorage.getItem(KEY) === '1'; } catch (e) {}
@@ -329,17 +328,15 @@ h1 {
   var tip = document.getElementById('tip');
   var open = null; // ctx of the fruit whose card is showing
   var narrow = matchMedia('(max-width: 639px)');
-  var STATES = ['pressed', 'grabbed', 'dragging', 'detached', 'open', 'returning'];
 
   function unit() { return svg.viewBox.baseVal.width / svg.getBoundingClientRect().width; }
-  function go(c, s) { c.state = s; STATES.forEach(function (k) { c.f.classList.toggle('is-' + k, k === s); }); }
+  function go(c, s) { c.state = s; c.f.dataset.state = s; }
   function setPos(c, x, y) {
     c.x = x; c.y = y;
     c.body.style.transform = 'translate(' + x + 'px,' + (STEM + y) + 'px)';
     if (c.state !== 'detached' && c.state !== 'open')
       c.stem.setAttribute('d', 'M0 0Q' + x * .2 + ' ' + (STEM + y) * .6 + ' ' + x + ' ' + (STEM + y));
   }
-  function wobble(f) { f.classList.add('wobble'); }
   svg.addEventListener('animationend', function (e) {
     if (e.animationName === 'wobble') e.target.closest('.fruit').classList.remove('wobble');
   });
@@ -390,14 +387,14 @@ h1 {
   function onUp(e) {
     var c = e.currentTarget.__c;
     clearTimeout(c.timer);
-    if (c.state === 'pressed') { go(c, 'idle'); wobble(c.f); }
+    if (c.state === 'pressed') { go(c, 'idle'); c.f.classList.add('wobble'); }
     else if (c.state === 'grabbed' || c.state === 'dragging') spring(c);
   }
 
   // not ripe: wobble and a label
   function notYet(e) {
     var f = e.currentTarget;
-    wobble(f);
+    f.classList.add('wobble');
     var p = at(f, 0, -6);
     tip.textContent = f.dataset.name + ' · ' + f.dataset.status + ' · not ripe yet';
     tip.style.left = p.x + 'px'; tip.style.top = p.y + 'px'; tip.hidden = false;
