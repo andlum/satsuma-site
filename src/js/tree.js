@@ -14,7 +14,7 @@
     svg.classList.remove('grow');
     void svg.getBoundingClientRect();
     svg.classList.add('grow');
-    setTimeout(function () { try { localStorage.setItem(KEY, '1'); } catch (e) {} }, 2600);
+    setTimeout(function () { try { localStorage.setItem(KEY, '1'); } catch (e) {} }, 3200);
   }
   var grown = false;
   try { grown = localStorage.getItem(KEY) === '1'; } catch (e) {}
@@ -26,7 +26,6 @@
   var card = tree.querySelector('.card');
   var tip = tree.querySelector('.tip');
   var open = null;
-  var narrow = matchMedia('(max-width: 639px)');
 
   function unit() { return svg.viewBox.baseVal.width / svg.getBoundingClientRect().width; }
   function go(c, s) { c.state = s; c.f.dataset.state = s; }
@@ -100,42 +99,28 @@
     tip.timer = setTimeout(function () { tip.hidden = true; }, 1800);
   }
 
-  // card
+  // card: a modal <dialog>. Escape closes it natively; the close event
+  // springs the fruit back and returns focus to it.
   function openCard(c) {
-    if (open && open !== c) closeCard(false);
     open = c;
     var t = tree.querySelector('template[data-slug="' + c.f.dataset.slug + '"]');
     var body = card.querySelector('.card-body');
     body.innerHTML = '';
     if (t) body.appendChild(t.content.cloneNode(true));
     body.querySelector('h2').id = 'card-title';
-    tree.classList.add('has-open');
-    card.hidden = false;
     go(c, 'open');
-    place(c);
-    card.focus();
+    card.showModal();
   }
-  // desktop only; phones get the bottom sheet from CSS
-  function place(c) {
-    if (narrow.matches) return;
-    var p = at(c.f, c.x, STEM + c.y + 36);
-    var w = Math.min(320, tree.clientWidth);
-    var left = Math.max(0, Math.min(tree.clientWidth - w, p.x - w / 2));
-    card.style.left = left + 'px'; card.style.top = p.y + 'px'; card.style.width = w + 'px';
-    card.style.setProperty('--arrow', (p.x - left) + 'px');
-  }
-  function closeCard(refocus) {
+  card.addEventListener('close', function () {
     if (!open) return;
     var c = open; open = null;
-    card.hidden = true;
-    tree.classList.remove('has-open');
     spring(c);
-    if (refocus !== false) c.f.focus();
-  }
-  card.querySelector('.close').addEventListener('click', function () { closeCard(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeCard(); });
-  document.addEventListener('pointerdown', function (e) {
-    if (open && !card.contains(e.target) && !open.f.contains(e.target)) closeCard();
+    c.f.focus();
+  });
+  card.querySelector('.close').addEventListener('click', function () { card.close(); });
+  card.addEventListener('click', function (e) { // the backdrop is the dialog outside its box
+    var r = card.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) card.close();
   });
 
   // Enter or Space opens directly, no hold
@@ -143,8 +128,7 @@
     if (e.key !== 'Enter' && e.key !== ' ') return;
     e.preventDefault();
     var c = e.currentTarget.__c;
-    if (c.state === 'open') closeCard();
-    else if (c.state === 'idle') { go(c, 'grabbed'); detach(c); }
+    if (c.state === 'idle') { go(c, 'grabbed'); detach(c); }
   }
 
   svg.querySelectorAll('.fruit').forEach(function (f) {

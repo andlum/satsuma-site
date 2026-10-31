@@ -3,6 +3,9 @@
   the project's `slot`; fruit type follows status (live = ripe, in-progress =
   green, coming-soon = blossom). Growth, picking and cards live in
   src/js/tree.js, which reads everything it needs from this markup.
+
+  The static drawing (ground, trunk, branches, canopy) was generated once and
+  pasted in; the fruit loop and the card are hand-written below it.
 #}
 {% set anchors = [
   [200, 118], [138, 146], [262, 146], [96, 206], [304, 206], [200, 186],
@@ -11,38 +14,207 @@
 {% set kinds = { "live": "ripe", "in-progress": "green", "coming-soon": "blossom" } %}
 <div class="tree">
   <svg viewBox="0 0 400 500" role="img" aria-label="{{ collections.projects | treeLabel }}">
-    <path class="ground" pathLength="1" d="M34 454 Q200 442 366 454"/>
-    <ellipse class="root" cx="200" cy="449" rx="24" ry="7"/>
-    <path class="trunk" pathLength="1" d="M200 450 C203 420 196 385 200 340"/>
-    <g class="branches">
-      <path class="branch" pathLength="1" style="--i:0" d="M200 352 C178 330 140 310 112 272"/>
-      <path class="branch" pathLength="1" style="--i:1" d="M200 346 C222 322 262 300 296 268"/>
-      <path class="branch" pathLength="1" style="--i:2" d="M200 344 C198 300 186 262 168 208"/>
-      <path class="branch" pathLength="1" style="--i:3" d="M200 342 C208 296 232 250 252 196"/>
-      <path class="branch" pathLength="1" style="--i:4" d="M200 356 C236 352 268 334 302 312"/>
-    </g>
-    <g class="leaves">
-      <circle class="leaf deep" cx="200" cy="150" r="62" style="transform-origin:200px 206px;--i:0"/>
-      <circle class="leaf deep" cx="130" cy="195" r="58" style="transform-origin:153px 242px;--i:1"/>
-      <circle class="leaf deep" cx="270" cy="195" r="58" style="transform-origin:247px 242px;--i:2"/>
-      <circle class="leaf deep" cx="105" cy="265" r="52" style="transform-origin:142px 294px;--i:3"/>
-      <circle class="leaf deep" cx="295" cy="265" r="52" style="transform-origin:258px 294px;--i:4"/>
-      <circle class="leaf deep" cx="200" cy="295" r="60" style="transform-origin:200px 349px;--i:5"/>
-      <circle class="leaf deep" cx="160" cy="240" r="55" style="transform-origin:179px 286px;--i:6"/>
-      <circle class="leaf deep" cx="245" cy="240" r="55" style="transform-origin:224px 285px;--i:7"/>
-      <circle class="leaf mid" cx="200" cy="130" r="40" style="transform-origin:200px 166px;--i:8"/>
-      <circle class="leaf mid" cx="150" cy="170" r="38" style="transform-origin:160px 203px;--i:9"/>
-      <circle class="leaf mid" cx="250" cy="174" r="40" style="transform-origin:239px 206px;--i:10"/>
-      <circle class="leaf mid" cx="110" cy="225" r="36" style="transform-origin:130px 250px;--i:11"/>
-      <circle class="leaf mid" cx="290" cy="225" r="36" style="transform-origin:270px 250px;--i:12"/>
-      <circle class="leaf mid" cx="165" cy="300" r="36" style="transform-origin:187px 324px;--i:13"/>
-      <circle class="leaf mid" cx="240" cy="300" r="36" style="transform-origin:217px 322px;--i:14"/>
-      <circle class="leaf mid" cx="200" cy="213" r="46" style="transform-origin:200px 254px;--i:15"/>
-      <circle class="leaf hi" cx="188" cy="116" r="11" style="transform-origin:189px 126px;--i:16"/>
-      <circle class="leaf hi" cx="138" cy="158" r="8" style="transform-origin:140px 165px;--i:17"/>
-      <circle class="leaf hi" cx="276" cy="226" r="8" style="transform-origin:271px 231px;--i:18"/>
-      <circle class="leaf hi" cx="124" cy="300" r="7" style="transform-origin:128px 304px;--i:19"/>
-    </g>
+    <defs>
+      <g id="lf"><path d="M0 0 C7 -5 8 -14 0 -21 C-8 -14 -7 -5 0 0Z"/><path class="vein" d="M0 -3 L0 -17"/></g>
+    </defs>
+    <ellipse class="shade" cx="200" cy="453" rx="126" ry="8"/>
+    <path class="ground" pathLength="1" d="M48 455 Q200 441 352 455"/>
+    <g transform="translate(150 452) scale(1)"><g class="tuft"><path d="M0 0 C-3 -5 -4 -10 -2 -15 C0 -10 1 -5 0 0Z"/><path d="M0 0 C3 -4 7 -8 6 -14 C4 -9 2 -5 0 0Z"/><path d="M0 0 C-4 -3 -8 -5 -10 -9 C-6 -7 -3 -4 0 0Z"/></g></g>
+    <g transform="translate(236 452) scale(0.8)"><g class="tuft"><path d="M0 0 C-3 -5 -4 -10 -2 -15 C0 -10 1 -5 0 0Z"/><path d="M0 0 C3 -4 7 -8 6 -14 C4 -9 2 -5 0 0Z"/><path d="M0 0 C-4 -3 -8 -5 -10 -9 C-6 -7 -3 -4 0 0Z"/></g></g>
+    <g transform="translate(118 452) scale(0.7)"><g class="tuft"><path d="M0 0 C-3 -5 -4 -10 -2 -15 C0 -10 1 -5 0 0Z"/><path d="M0 0 C3 -4 7 -8 6 -14 C4 -9 2 -5 0 0Z"/><path d="M0 0 C-4 -3 -8 -5 -10 -9 C-6 -7 -3 -4 0 0Z"/></g></g>
+    <g transform="translate(268 452) scale(0.9)"><g class="tuft"><path d="M0 0 C-3 -5 -4 -10 -2 -15 C0 -10 1 -5 0 0Z"/><path d="M0 0 C3 -4 7 -8 6 -14 C4 -9 2 -5 0 0Z"/><path d="M0 0 C-4 -3 -8 -5 -10 -9 C-6 -7 -3 -4 0 0Z"/></g></g>
+    <ellipse class="root" cx="200" cy="451" rx="30" ry="6"/>
+    <path class="trunk" d="M182 452 C188 426 191 396 193 352 C196 346 204 346 207 352 C209 396 212 426 218 452 Q200 446 182 452Z"/>
+    <path class="trunk-shade" d="M202 350 C204 396 207 426 212 452 L218 452 C212 426 209 396 207 352Z"/>
+    <path class="branch" style="--i:0;transform-origin:196px 354px" d="M199.7 349.9L192.2 343.6L184.4 336.9L176.4 329.8L168.2 322.3L159.7 314.3L150.9 306L141.9 297.3L132.7 288.1L123.2 278.6L113.5 268.6L110.5 271.4L119.8 281.8L128.8 291.9L137.5 301.5L146.1 310.8L154.3 319.7L162.4 328.1L170.2 336.2L177.8 343.9L185.2 351.2L192.3 358.1Z"/>
+    <path class="branch" style="--i:1;transform-origin:204px 350px" d="M207.6 354.2L215.5 346.9L223.6 339.4L232 331.5L240.7 323.3L249.5 314.8L258.6 305.9L268 296.8L277.5 287.3L287.3 277.5L297.4 267.4L294.6 264.6L284.1 274.1L273.8 283.4L263.8 292.3L254 300.9L244.5 309.2L235.2 317.2L226.1 324.8L217.3 332.2L208.8 339.1L200.4 345.8Z"/>
+    <path class="branch" style="--i:2;transform-origin:199px 350px" d="M203.9 349.3L201.7 337L199.1 324.3L196.3 311.1L193.2 297.4L189.9 283.3L186.3 268.7L182.5 253.7L178.4 238.1L174.1 222.1L169.5 205.6L166.5 206.4L170.5 223L174.1 239.2L177.5 254.8L180.7 270L183.6 284.7L186.2 298.9L188.6 312.6L190.6 325.8L192.5 338.5L194.1 350.7Z"/>
+    <path class="branch" style="--i:3;transform-origin:201px 350px" d="M205.8 351.4L209.7 337.2L213.9 322.7L218.2 307.9L222.7 292.9L227.3 277.5L232.2 261.9L237.2 246L242.4 229.8L247.8 213.3L253.4 196.5L250.6 195.5L244.3 212L238.3 228.3L232.4 244.3L226.7 260L221.2 275.5L215.8 290.6L210.6 305.5L205.7 320.2L200.8 334.5L196.2 348.6Z"/>
+    <path class="branch" style="--i:4;transform-origin:205px 356px" d="M205.4 360L216.2 358.2L226.7 355.6L237 352.4L247.1 348.5L256.9 344L266.6 338.7L276 332.8L285.2 326.3L294.2 319L303 311.1L301 308.9L292 316.3L282.9 323L273.6 329L264.1 334.4L254.6 339L244.9 343L235 346.2L225 348.8L214.8 350.8L204.6 352Z"/>
+    <path class="branch" style="--i:5;transform-origin:195px 356px" d="M195.3 352.5L186.5 351.6L177.8 350.2L169.1 348.1L160.4 345.5L151.8 342.2L143.1 338.4L134.5 333.9L126 328.8L117.4 323.1L108.9 316.8L107.1 319.2L115.4 325.9L123.9 332L132.4 337.5L141 342.4L149.7 346.8L158.6 350.5L167.5 353.7L176.4 356.2L185.5 358.2L194.7 359.5Z"/>
+    <path class="branch" style="--i:6;transform-origin:132px 290px" d="M133.6 288.8L129.2 283.1L125 277L121 270.6L117.1 263.7L113.4 256.4L109.8 248.6L106.3 240.5L103.1 232L99.9 223.1L97 213.7L95 214.3L97.8 223.7L100.8 232.8L103.9 241.5L107.2 249.8L110.6 257.6L114.3 265.1L118 272.2L122 279L126.1 285.3L130.4 291.2Z"/>
+    <path class="branch" style="--i:7;transform-origin:276px 288px" d="M277.7 289.1L281.5 282.8L285.1 276.2L288.5 269.3L291.6 262.1L294.4 254.5L297 246.7L299.4 238.5L301.5 230L303.4 221.3L305 212.2L303 211.8L301.2 220.8L299.2 229.5L296.9 237.8L294.3 245.8L291.6 253.5L288.6 260.8L285.4 267.8L281.9 274.5L278.2 280.9L274.3 286.9Z"/>
+    <circle class="base" cx="200" cy="150" r="62" style="transform-origin:200px 193.4px;--i:0"/>
+    <circle class="base" cx="130" cy="195" r="58" style="transform-origin:146.7px 232px;--i:1"/>
+    <circle class="base" cx="270" cy="195" r="58" style="transform-origin:253.3px 232px;--i:2"/>
+    <circle class="base" cx="105" cy="265" r="52" style="transform-origin:132.1px 289.3px;--i:3"/>
+    <circle class="base" cx="295" cy="265" r="52" style="transform-origin:267.9px 289.3px;--i:4"/>
+    <circle class="base" cx="200" cy="295" r="60" style="transform-origin:200px 337px;--i:5"/>
+    <circle class="base" cx="160" cy="240" r="55" style="transform-origin:173.2px 276.2px;--i:6"/>
+    <circle class="base" cx="245" cy="240" r="55" style="transform-origin:230.4px 275.6px;--i:7"/>
+    <circle class="base" cx="196" cy="214" r="46" style="transform-origin:196.9px 246.2px;--i:8"/>
+    <g transform="translate(216.1 331.7) rotate(110.5) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:9"/></g>
+    <g transform="translate(156.9 330.7) rotate(241.3) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:10"/></g>
+    <g transform="translate(227.4 330.1) rotate(63.4) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:11"/></g>
+    <g transform="translate(245 328.3) rotate(122.2) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:12"/></g>
+    <g transform="translate(193.9 321.4) rotate(101.5) scale(1.3)"><use href="#lf" class="leaf deep" style="--i:13"/></g>
+    <g transform="translate(169.6 321.3) rotate(58.8) scale(1.9)"><use href="#lf" class="leaf deep" style="--i:14"/></g>
+    <g transform="translate(250 320.2) rotate(129.3) scale(1.6)"><use href="#lf" class="leaf deep" style="--i:15"/></g>
+    <g transform="translate(148 315.8) rotate(246.9) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:16"/></g>
+    <g transform="translate(99.6 312.7) rotate(201.2) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:17"/></g>
+    <g transform="translate(302.1 312.5) rotate(174) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:18"/></g>
+    <g transform="translate(114.7 312) rotate(177.3) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:19"/></g>
+    <g transform="translate(283.7 311.6) rotate(179.6) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:20"/></g>
+    <g transform="translate(231.2 309.9) rotate(178.6) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:21"/></g>
+    <g transform="translate(145.9 309.5) rotate(248.2) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:22"/></g>
+    <g transform="translate(176.9 309.1) rotate(158.3) scale(1.7)"><use href="#lf" class="leaf deep" style="--i:23"/></g>
+    <g transform="translate(159.5 309) rotate(293) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:24"/></g>
+    <g transform="translate(84.1 308.2) rotate(218.3) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:25"/></g>
+    <g transform="translate(130.7 305.6) rotate(154) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:26"/></g>
+    <g transform="translate(321.1 305.3) rotate(147.6) scale(1.7)"><use href="#lf" class="leaf deep" style="--i:27"/></g>
+    <g transform="translate(96 304.7) rotate(73.5) scale(1.3)"><use href="#lf" class="leaf mid" style="--i:28"/></g>
+    <g transform="translate(195.6 304.2) rotate(3.5) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:29"/></g>
+    <g transform="translate(205.6 303.8) rotate(103.8) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:30"/></g>
+    <g transform="translate(266 303.3) rotate(220.1) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:31"/></g>
+    <g transform="translate(255.5 302.4) rotate(111) scale(1.6)"><use href="#lf" class="leaf deep" style="--i:32"/></g>
+    <g transform="translate(138.4 299.4) rotate(136.1) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:33"/></g>
+    <g transform="translate(329.4 298.4) rotate(118.3) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:34"/></g>
+    <g transform="translate(77.5 296.6) rotate(47.3) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:35"/></g>
+    <g transform="translate(68.6 296.3) rotate(220.9) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:36"/></g>
+    <g transform="translate(189.8 295.2) rotate(169.8) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:37"/></g>
+    <g transform="translate(320.1 293.6) rotate(330.3) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:38"/></g>
+    <g transform="translate(213.5 293.2) rotate(188.4) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:39"/></g>
+    <g transform="translate(232.7 291.7) rotate(298.9) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:40"/></g>
+    <g transform="translate(150.3 291.6) rotate(110.2) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:41"/></g>
+    <g transform="translate(131.5 291.5) rotate(121) scale(1.7)"><use href="#lf" class="leaf deep" style="--i:42"/></g>
+    <g transform="translate(272.1 291.2) rotate(121.5) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:43"/></g>
+    <g transform="translate(313.9 287.1) rotate(39) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:44"/></g>
+    <g transform="translate(101.2 287) rotate(186.4) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:45"/></g>
+    <g transform="translate(282 286.9) rotate(25.5) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:46"/></g>
+    <g transform="translate(337.9 286.6) rotate(105.2) scale(1.7)"><use href="#lf" class="leaf deep" style="--i:47"/></g>
+    <g transform="translate(177.2 284.8) rotate(15.1) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:48"/></g>
+    <g transform="translate(61.2 284.6) rotate(228.4) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:49"/></g>
+    <g transform="translate(112.6 283.9) rotate(358) scale(1.3)"><use href="#lf" class="leaf deep" style="--i:50"/></g>
+    <g transform="translate(341.7 276.2) rotate(90.5) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:51"/></g>
+    <g transform="translate(189 274.6) rotate(251.5) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:52"/></g>
+    <g transform="translate(174.7 273.7) rotate(31.9) scale(1.9)"><use href="#lf" class="leaf deep" style="--i:53"/></g>
+    <g transform="translate(124 273.5) rotate(148.2) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:54"/></g>
+    <g transform="translate(245.6 273.1) rotate(132.7) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:55"/></g>
+    <g transform="translate(149.7 272.5) rotate(97.2) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:56"/></g>
+    <g transform="translate(81.3 271.5) rotate(155.2) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:57"/></g>
+    <g transform="translate(285.4 270.9) rotate(90.8) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:58"/></g>
+    <g transform="translate(235.3 270.9) rotate(307.4) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:59"/></g>
+    <g transform="translate(308 268.2) rotate(169.4) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:60"/></g>
+    <g transform="translate(207 266.7) rotate(258) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:61"/></g>
+    <g transform="translate(57 265.7) rotate(278.6) scale(1.6)"><use href="#lf" class="leaf hi" style="--i:62"/></g>
+    <g transform="translate(130.8 265.5) rotate(128) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:63"/></g>
+    <g transform="translate(98.2 264.4) rotate(245.2) scale(1.5)"><use href="#lf" class="leaf hi" style="--i:64"/></g>
+    <g transform="translate(319.7 264.2) rotate(341.2) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:65"/></g>
+    <g transform="translate(262 264.1) rotate(117) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:66"/></g>
+    <g transform="translate(342.8 260.8) rotate(427) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:67"/></g>
+    <g transform="translate(199.9 258.3) rotate(67.1) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:68"/></g>
+    <g transform="translate(140.2 257.5) rotate(289.4) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:69"/></g>
+    <g transform="translate(85.4 257.1) rotate(333.9) scale(1.9)"><use href="#lf" class="leaf hi" style="--i:70"/></g>
+    <g transform="translate(263.2 256.7) rotate(140.8) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:71"/></g>
+    <g transform="translate(228.4 255.6) rotate(291.3) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:72"/></g>
+    <g transform="translate(58.1 254.7) rotate(298.8) scale(1.7)"><use href="#lf" class="leaf hi" style="--i:73"/></g>
+    <g transform="translate(176.3 254.5) rotate(292) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:74"/></g>
+    <g transform="translate(251.4 253.4) rotate(127.3) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:75"/></g>
+    <g transform="translate(148 253.2) rotate(143.1) scale(1.3)"><use href="#lf" class="leaf mid" style="--i:76"/></g>
+    <g transform="translate(123 252.5) rotate(238.6) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:77"/></g>
+    <g transform="translate(324.4 249.4) rotate(158.1) scale(1.7)"><use href="#lf" class="leaf deep" style="--i:78"/></g>
+    <g transform="translate(101.7 249.2) rotate(328.2) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:79"/></g>
+    <g transform="translate(309.8 247.4) rotate(348) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:80"/></g>
+    <g transform="translate(294.3 247.2) rotate(3) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:81"/></g>
+    <g transform="translate(205.5 247) rotate(246.9) scale(1.3)"><use href="#lf" class="leaf mid" style="--i:82"/></g>
+    <g transform="translate(338.1 244) rotate(438.8) scale(1.7)"><use href="#lf" class="leaf deep" style="--i:83"/></g>
+    <g transform="translate(64.8 238.8) rotate(303.7) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:84"/></g>
+    <g transform="translate(198.9 238.7) rotate(122.4) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:85"/></g>
+    <g transform="translate(310.4 238.5) rotate(2.5) scale(1.3)"><use href="#lf" class="leaf deep" style="--i:86"/></g>
+    <g transform="translate(268.9 238.4) rotate(8.3) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:87"/></g>
+    <g transform="translate(110.9 236.9) rotate(83.8) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:88"/></g>
+    <g transform="translate(171 235.8) rotate(129.8) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:89"/></g>
+    <g transform="translate(293.2 233.6) rotate(303.3) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:90"/></g>
+    <g transform="translate(210.3 232.4) rotate(135.5) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:91"/></g>
+    <g transform="translate(131 232.4) rotate(93.1) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:92"/></g>
+    <g transform="translate(225 232.3) rotate(163.5) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:93"/></g>
+    <g transform="translate(156.6 232.3) rotate(332.5) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:94"/></g>
+    <g transform="translate(328.9 231.1) rotate(407.4) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:95"/></g>
+    <g transform="translate(251.8 230.5) rotate(295.4) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:96"/></g>
+    <g transform="translate(93.2 226.9) rotate(221) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:97"/></g>
+    <g transform="translate(81.3 223.3) rotate(327.8) scale(1.8)"><use href="#lf" class="leaf hi" style="--i:98"/></g>
+    <g transform="translate(176.9 220.9) rotate(92.5) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:99"/></g>
+    <g transform="translate(283.3 220.8) rotate(66.5) scale(1.6)"><use href="#lf" class="leaf deep" style="--i:100"/></g>
+    <g transform="translate(267.4 217.2) rotate(240.7) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:101"/></g>
+    <g transform="translate(192.9 216.9) rotate(15.5) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:102"/></g>
+    <g transform="translate(303.6 216.2) rotate(166.7) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:103"/></g>
+    <g transform="translate(205.3 212.3) rotate(349.3) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:104"/></g>
+    <g transform="translate(155.7 211.3) rotate(53.3) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:105"/></g>
+    <g transform="translate(250.8 209.3) rotate(247) scale(1.9)"><use href="#lf" class="leaf mid" style="--i:106"/></g>
+    <g transform="translate(111.6 208.9) rotate(20.6) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:107"/></g>
+    <g transform="translate(233.7 208.5) rotate(247) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:108"/></g>
+    <g transform="translate(102.9 208) rotate(72) scale(1.7)"><use href="#lf" class="leaf hi" style="--i:109"/></g>
+    <g transform="translate(137.1 207.6) rotate(341.9) scale(1.9)"><use href="#lf" class="leaf mid" style="--i:110"/></g>
+    <g transform="translate(77.4 207.2) rotate(252.3) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:111"/></g>
+    <g transform="translate(262.4 201.5) rotate(86.9) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:112"/></g>
+    <g transform="translate(217.9 201.5) rotate(19.3) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:113"/></g>
+    <g transform="translate(153.3 201.3) rotate(5.3) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:114"/></g>
+    <g transform="translate(323.7 200.2) rotate(94.3) scale(1.7)"><use href="#lf" class="leaf deep" style="--i:115"/></g>
+    <g transform="translate(248.3 199.6) rotate(41) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:116"/></g>
+    <g transform="translate(93.3 197.5) rotate(303.8) scale(1.5)"><use href="#lf" class="leaf hi" style="--i:117"/></g>
+    <g transform="translate(172 197.1) rotate(115.3) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:118"/></g>
+    <g transform="translate(226.7 194.3) rotate(331.8) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:119"/></g>
+    <g transform="translate(300.4 192.9) rotate(307.5) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:120"/></g>
+    <g transform="translate(76.1 191.9) rotate(273.4) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:121"/></g>
+    <g transform="translate(196.2 191.9) rotate(349.6) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:122"/></g>
+    <g transform="translate(140.7 190.8) rotate(227.5) scale(1.9)"><use href="#lf" class="leaf mid" style="--i:123"/></g>
+    <g transform="translate(290.2 190.1) rotate(41.4) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:124"/></g>
+    <g transform="translate(115.6 189.6) rotate(97.2) scale(1.4)"><use href="#lf" class="leaf hi" style="--i:125"/></g>
+    <g transform="translate(323.7 189.2) rotate(429) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:126"/></g>
+    <g transform="translate(92 181.6) rotate(36.9) scale(1.7)"><use href="#lf" class="leaf hi" style="--i:127"/></g>
+    <g transform="translate(243.6 181.6) rotate(226.1) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:128"/></g>
+    <g transform="translate(116.1 180.9) rotate(193.4) scale(1.3)"><use href="#lf" class="leaf hi" style="--i:129"/></g>
+    <g transform="translate(212.3 179.5) rotate(33.7) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:130"/></g>
+    <g transform="translate(172.9 178) rotate(266.2) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:131"/></g>
+    <g transform="translate(129.7 177) rotate(348.9) scale(1.9)"><use href="#lf" class="leaf mid" style="--i:132"/></g>
+    <g transform="translate(313.9 176.8) rotate(334.4) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:133"/></g>
+    <g transform="translate(186.4 176.4) rotate(131.8) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:134"/></g>
+    <g transform="translate(274.5 175.5) rotate(42.4) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:135"/></g>
+    <g transform="translate(80 174.5) rotate(286) scale(1.8)"><use href="#lf" class="leaf hi" style="--i:136"/></g>
+    <g transform="translate(237.8 172.5) rotate(204.3) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:137"/></g>
+    <g transform="translate(292.6 171.6) rotate(313.7) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:138"/></g>
+    <g transform="translate(161.1 170.7) rotate(21.5) scale(1.8)"><use href="#lf" class="leaf hi" style="--i:139"/></g>
+    <g transform="translate(83.1 168.3) rotate(315.9) scale(1.7)"><use href="#lf" class="leaf hi" style="--i:140"/></g>
+    <g transform="translate(316 166.7) rotate(401.3) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:141"/></g>
+    <g transform="translate(142.2 163.2) rotate(344.3) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:142"/></g>
+    <g transform="translate(311.7 160.7) rotate(415.8) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:143"/></g>
+    <g transform="translate(155.1 160.5) rotate(36.6) scale(1.7)"><use href="#lf" class="leaf hi" style="--i:144"/></g>
+    <g transform="translate(187 159.2) rotate(358.6) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:145"/></g>
+    <g transform="translate(90.9 157.8) rotate(306.2) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:146"/></g>
+    <g transform="translate(285.5 157.6) rotate(295) scale(1.9)"><use href="#lf" class="leaf mid" style="--i:147"/></g>
+    <g transform="translate(111.6 155.8) rotate(42.2) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:148"/></g>
+    <g transform="translate(210.7 155.4) rotate(218.8) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:149"/></g>
+    <g transform="translate(253.3 153.2) rotate(143.4) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:150"/></g>
+    <g transform="translate(179.3 152.5) rotate(253.4) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:151"/></g>
+    <g transform="translate(228.1 151.8) rotate(72.8) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:152"/></g>
+    <g transform="translate(269.4 151) rotate(326.2) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:153"/></g>
+    <g transform="translate(105.5 146.9) rotate(333.4) scale(1.7)"><use href="#lf" class="leaf hi" style="--i:154"/></g>
+    <g transform="translate(292.7 146) rotate(402.1) scale(1.5)"><use href="#lf" class="leaf deep" style="--i:155"/></g>
+    <g transform="translate(287 143.8) rotate(394.7) scale(1.4)"><use href="#lf" class="leaf deep" style="--i:156"/></g>
+    <g transform="translate(236.4 142.4) rotate(111) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:157"/></g>
+    <g transform="translate(260.6 141.8) rotate(342.1) scale(1.8)"><use href="#lf" class="leaf deep" style="--i:158"/></g>
+    <g transform="translate(122.4 141.5) rotate(346.5) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:159"/></g>
+    <g transform="translate(136.8 141.4) rotate(373.7) scale(1.7)"><use href="#lf" class="leaf hi" style="--i:160"/></g>
+    <g transform="translate(179.4 141.3) rotate(93.8) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:161"/></g>
+    <g transform="translate(218.2 139.7) rotate(6.8) scale(1.9)"><use href="#lf" class="leaf mid" style="--i:162"/></g>
+    <g transform="translate(256.7 137.9) rotate(453.1) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:163"/></g>
+    <g transform="translate(143.8 135.7) rotate(286) scale(1.7)"><use href="#lf" class="leaf mid" style="--i:164"/></g>
+    <g transform="translate(188.7 133.7) rotate(228.5) scale(1.4)"><use href="#lf" class="leaf hi" style="--i:165"/></g>
+    <g transform="translate(154 131.8) rotate(19.9) scale(1.4)"><use href="#lf" class="leaf hi" style="--i:166"/></g>
+    <g transform="translate(252.2 124.7) rotate(442) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:167"/></g>
+    <g transform="translate(186.4 122.3) rotate(203.1) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:168"/></g>
+    <g transform="translate(229.8 120) rotate(188.9) scale(1.7)"><use href="#lf" class="leaf hi" style="--i:169"/></g>
+    <g transform="translate(168.6 118.7) rotate(299.4) scale(1.5)"><use href="#lf" class="leaf hi" style="--i:170"/></g>
+    <g transform="translate(152.3 117) rotate(301.7) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:171"/></g>
+    <g transform="translate(218 114.6) rotate(306.1) scale(1.5)"><use href="#lf" class="leaf hi" style="--i:172"/></g>
+    <g transform="translate(242.7 110.8) rotate(395.2) scale(1.8)"><use href="#lf" class="leaf mid" style="--i:173"/></g>
+    <g transform="translate(158.5 109.5) rotate(313.7) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:174"/></g>
+    <g transform="translate(186.6 101.6) rotate(229.3) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:175"/></g>
+    <g transform="translate(231.1 101.1) rotate(385.7) scale(1.6)"><use href="#lf" class="leaf mid" style="--i:176"/></g>
+    <g transform="translate(177.1 96.7) rotate(331.6) scale(1.4)"><use href="#lf" class="leaf mid" style="--i:177"/></g>
+    <g transform="translate(220.2 95.6) rotate(395.8) scale(1.5)"><use href="#lf" class="leaf mid" style="--i:178"/></g>
+    <g transform="translate(182.3 94.8) rotate(340.6) scale(1.6)"><use href="#lf" class="leaf hi" style="--i:179"/></g>
+    <g transform="translate(197.7 92) rotate(362.1) scale(1.7)"><use href="#lf" class="leaf hi" style="--i:180"/></g>
     <g class="fruits">
       {%- for project in collections.projects %}
       {%- set p = project.data %}
@@ -55,8 +227,11 @@
           <g class="body" transform="translate(0 12)">
             <g class="sway">
               <circle class="skin" cy="14" r="14"/>
-              <circle class="shine" cx="-5" cy="9" r="4"/>
-              <path class="fleaf" d="M0 1c2-4 6-4 8-3-3 0-5 1-8 3z"/>
+              <path class="shade" d="M-12.1 21 A14 14 0 0 0 13.2 18.8 A17 17 0 0 1 -12.1 21Z"/>
+              <ellipse class="shine" cx="-5.5" cy="8" rx="4.5" ry="2.8" transform="rotate(-35 -5.5 8)"/>
+              <circle class="navel" cy="1.6" r="1.5"/>
+              <path class="fleaf" d="M0 1 C3 -5 9 -6 12 -4 C8 -3 4 -1 0 1Z"/>
+              <path class="fleaf deep" d="M0 1 C-2 -5 -7 -7 -10 -5 C-6 -4 -3 -2 0 1Z"/>
             </g>
           </g>
           {%- elif kind == "green" %}
@@ -64,7 +239,9 @@
           <g class="body" transform="translate(0 10)">
             <g class="sway">
               <circle class="skin" cy="10" r="10"/>
-              <circle class="rim" cy="10" r="9.5"/>
+              <path class="shade" d="M-8.7 15 A10 10 0 0 0 9.4 13.4 A12.5 12.5 0 0 1 -8.7 15Z"/>
+              <ellipse class="shine" cx="-4" cy="6" rx="3" ry="1.9" transform="rotate(-35 -4 6)"/>
+              <path class="fleaf" d="M0 1 C2 -4 7 -5 9 -3 C6 -2 3 -1 0 1Z"/>
             </g>
           </g>
           {%- else %}
@@ -79,7 +256,11 @@
                 <circle cy="-5.5" r="5"/><circle cx="5.2" cy="-1.7" r="5"/><circle cx="3.2" cy="4.5" r="5"/>
                 <circle cx="-3.2" cy="4.5" r="5"/><circle cx="-5.2" cy="-1.7" r="5"/>
               </g>
-              <circle class="eye" cy="8" r="2.4"/>
+              <g class="stamen" transform="translate(0 8)">
+                <circle cy="-3.8" r=".9"/><circle cx="3.6" cy="-1.2" r=".9"/><circle cx="2.2" cy="3.1" r=".9"/>
+                <circle cx="-2.2" cy="3.1" r=".9"/><circle cx="-3.6" cy="-1.2" r=".9"/>
+              </g>
+              <circle class="eye" cy="8" r="2.2"/>
             </g>
           </g>
           {%- endif %}
@@ -88,10 +269,11 @@
       {%- endfor %}
     </g>
   </svg>
-  <div class="card" role="dialog" aria-labelledby="card-title" tabindex="-1" hidden>
+  <dialog class="card" aria-labelledby="card-title">
+    <svg class="card-fruit" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="17" r="12"/><path d="M16 5c2-3 5-3 6-2-2 0-4 1-6 2z"/></svg>
     <div class="card-body"></div>
     <button class="close" type="button" aria-label="Close">&times;</button>
-  </div>
+  </dialog>
   <div class="tip" role="status" hidden></div>
 
   {#- Card contents, one per ripe fruit. tree.js clones the template whose
