@@ -53,6 +53,17 @@ tufts.forEach(([x, y, s], i) => {
   out.push(`<g transform="translate(${x} ${y}) scale(${s})"><use href="#daisy" class="daisy"/></g>`);
 });
 
+// Trunk: drawn under the crown, so the lowest leaves hang in front of it.
+// Flared foot, a hard shadow down the
+// right side, a highlight on the left, a few bark nicks.
+out.push(`<g class="bole">
+  <path class="trunk" d="M176 456 C185 446 189 424 190.500 398 C191.500 380 191 366 189 351 C194 345 206 345 211 351 C209 366 208.500 380 209.500 398 C211 424 215 446 224 456 C216 452.500 208 452.500 200 456 C192 452.500 184 452.500 176 456Z"/>
+  <path class="trunk-shade" d="M203 347 C203 380 205 424 213 453 C217 453.500 221 454.500 224 456 C215 446 211 424 209.500 398 C208.500 380 209 366 211 351 C209 348.500 206 347.200 203 347Z"/>
+  <path class="trunk-lit" d="M194.500 362 C195.500 386 195 414 190.500 438"/>
+  <path class="bark" d="M199 372 l3 5 M197 404 l3.500 4 M203 424 l-3 5 M196 388 l-2 3"/>
+  <path class="trunk-line" d="M176 456 C185 446 189 424 190.500 398 C191.500 380 191 366 189 351 M211 351 C209 366 208.500 380 209.500 398 C211 424 215 446 224 456 C216 452.500 208 452.500 200 456 C192 452.500 184 452.500 176 456"/>
+</g>`);
+
 // Branches: tapered limbs from the top of the trunk into the clumps. They sit
 // inside .crown so they lean with the canopy.
 out.push(`<g class="crown">`);
@@ -135,16 +146,6 @@ CLUMPS.forEach((c, ci) => {
   }
 });
 out.push(`</g>`);
-
-// Trunk: drawn over the branch roots. Flared foot, a hard shadow down the
-// right side, a highlight on the left, a few bark nicks.
-out.push(`<g class="bole">
-  <path class="trunk" d="M176 456 C185 446 189 424 190.500 398 C191.500 380 191 366 189 351 C194 345 206 345 211 351 C209 366 208.500 380 209.500 398 C211 424 215 446 224 456 C216 452.500 208 452.500 200 456 C192 452.500 184 452.500 176 456Z"/>
-  <path class="trunk-shade" d="M203 347 C203 380 205 424 213 453 C217 453.500 221 454.500 224 456 C215 446 211 424 209.500 398 C208.500 380 209 366 211 351 C209 348.500 206 347.200 203 347Z"/>
-  <path class="trunk-lit" d="M194.500 362 C195.500 386 195 414 190.500 438"/>
-  <path class="bark" d="M199 372 l3 5 M197 404 l3.500 4 M203 424 l-3 5 M196 388 l-2 3"/>
-  <path class="trunk-line" d="M176 456 C185 446 189 424 190.500 398 C191.500 380 191 366 189 351 M211 351 C209 366 208.500 380 209.500 398 C211 424 215 446 224 456 C216 452.500 208 452.500 200 456 C192 452.500 184 452.500 176 456"/>
-</g>`);
 
 const file = path.join(__dirname, "..", "src", "_includes", "tree-art.njk");
 fs.writeFileSync(file, out.join("\n").replace(/(\d)\.500/g, "$1.5") + "\n");
