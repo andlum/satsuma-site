@@ -3,14 +3,22 @@
   --tangerine: #E06A16;
   --celadon: #B7E4C7;
   --ink: #1C1410;
-  /* Tree palette (spec, "Composition"): two leaf greens, unripe green,
-     blossom shadow, bark, ground. */
-  --leaf: #7CC08E;
-  --leaf-deep: #4E9B6B;
+  /* Tree palette: the canopy outline, four leaf greens (celadon is the
+     fifth, lightest), grass, fruit and bark tones. */
+  --line: #1F5A45;
+  --leaf-dark: #2E7D5A;
+  --leaf-deep: #45996B;
+  --leaf: #69BC82;
+  --leaf-light: #97D79B;
+  --leaf-hi: #C4EDBE;
+  --grass: #CDE9BD;
   --unripe: #A9D352;
+  --tangerine-deep: #B4500E;
   --blossom-shadow: #EDD6B4;
   --bark: #8A5A3C;
-  --ground: #E9D6B8;
+  --bark-deep: #6E442B;
+  --bark-lit: #AD7A56;
+  --bark-line: #53311E;
   --muted: #6B5E55;
   --rule: rgba(28, 20, 16, .14);
   --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
@@ -123,41 +131,67 @@ h2 {
    js/tree.js. 4:5 drawing, sized to the shorter side of the stage. */
 .tree { position: relative; width: min(100%, 580px, calc((100vh - 240px) * .8)); width: min(100%, 580px, calc((100svh - 240px) * .8)); }
 .tree > svg { display: block; width: 100%; height: auto; overflow: visible; }
-.shade { fill: var(--ground); opacity: .55; }
-.ground { fill: none; stroke: var(--ground); stroke-width: 6; stroke-linecap: round; }
+/* The drawing is cel-shaded: flat tones, hard edges, light from the upper
+   left. Five leaf tones run dark to hi; --line is the canopy's outline. */
+.mound { fill: var(--grass); }
+.mound-band { fill: var(--leaf); opacity: .55; }
+.mound-lit { fill: #fff; opacity: .35; }
+.cast { fill: var(--leaf-deep); opacity: .4; }
 .tuft { fill: var(--leaf); }
-.root { fill: var(--bark); }
+.tuft.deep { fill: var(--leaf-deep); }
+.daisy { fill: #fff; }
+.daisy .eye, #daisy .eye { fill: var(--tangerine); }
 .trunk { fill: var(--bark); cursor: pointer; }
-.trunk-shade, .branch-shade { fill: var(--ink); opacity: .14; pointer-events: none; }
-.branch { fill: var(--bark); }
-.base { fill: var(--leaf-deep); filter: brightness(.8); }
+.trunk-shade { fill: var(--bark-deep); pointer-events: none; }
+.trunk-lit { fill: none; stroke: var(--bark-lit); stroke-width: 3; stroke-linecap: round; pointer-events: none; }
+.bark { fill: none; stroke: var(--bark-line); stroke-width: 1.4; stroke-linecap: round; opacity: .7; pointer-events: none; }
+.trunk-line { fill: none; stroke: var(--bark-line); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.branch { fill: var(--bark-deep); stroke: var(--bark-line); stroke-width: 1.2; stroke-linejoin: round; }
+.blob.rim { fill: var(--line); }
+.blob.dark { fill: var(--leaf-dark); }
+.blob.deep { fill: var(--leaf-deep); }
+.blob.mid { fill: var(--leaf); }
+.leaf.dark { fill: var(--leaf-dark); }
 .leaf.deep { fill: var(--leaf-deep); }
 .leaf.mid { fill: var(--leaf); }
-.leaf.hi { fill: var(--celadon); }
-.vein { fill: none; stroke: #fff; stroke-width: 1.2; stroke-linecap: round; opacity: .3; }
-.stem { fill: none; stroke: var(--bark); stroke-width: 2.5; stroke-linecap: round; transform-origin: 0 0; }
-.ripe .skin { fill: var(--tangerine); }
-.fruit .shade { fill: var(--ink); opacity: .12; }
-.fruit .shine { fill: #fff; opacity: .28; }
-.fruit .navel { fill: var(--bark); opacity: .6; }
-.fleaf { fill: var(--celadon); }
+.leaf.light { fill: var(--leaf-light); }
+.leaf.hi { fill: var(--leaf-hi); }
+.leaf { stroke: var(--line); stroke-width: .55; stroke-linejoin: round; }
+#lf .half, #tuft .half { stroke: none; }
+.half { fill: var(--ink); opacity: .13; }
+#lf .vein { fill: none; stroke: #fff; stroke-width: 1; stroke-linecap: round; opacity: .32; }
+.crown, .fruits { transform-origin: 200px 354px; }
+.stem { fill: none; stroke: var(--bark-line); stroke-width: 2.4; stroke-linecap: round; transform-origin: 0 0; }
+.skin { stroke-width: 1.5; }
+/* In-progress fruit (.green) is orange too: smaller than a ripe one, and not
+   pickable. Only the size and the missing glint tell them apart. */
+.ripe .skin, .green .skin { fill: var(--tangerine); stroke: var(--tangerine-deep); }
+.ripe .shade, .green .shade { fill: var(--tangerine-deep); opacity: .6; }
+.ripe .bounce, .green .bounce { stroke: #FFB067; }
+.fruit .bounce { fill: none; stroke-width: 1.5; stroke-linecap: round; opacity: .8; }
+.fruit .shine { fill: #FFF8EA; opacity: .92; }
+.fruit .pores { fill: none; stroke: var(--ink); stroke-width: 1.1; stroke-linecap: round; opacity: .16; }
+.calyx { fill: var(--leaf-dark); }
+.fleaf { fill: var(--leaf-light); stroke: var(--line); stroke-width: .8; stroke-linejoin: round; }
 .fleaf.deep { fill: var(--leaf-deep); }
-.green .skin { fill: var(--unripe); }
-.green .shine { opacity: .42; }
+.glint { fill: #fff; transform-box: fill-box; transform-origin: center; transform: scale(0); animation: glint 4.2s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .9s + 4s); pointer-events: none; }
+@keyframes glint { 0%, 78%, 100% { transform: scale(0) rotate(0); } 86% { transform: scale(1) rotate(45deg); } 94% { transform: scale(0) rotate(90deg); } }
 .blossom .petal { fill: #fff; }
 .blossom .petal-shadow { fill: var(--blossom-shadow); }
 .blossom .stamen { fill: var(--tangerine); opacity: .45; }
 .blossom .eye { fill: var(--tangerine); opacity: .75; }
 
+/* Rustle (js/wind.js). A sideways swipe on a phone rustles; a vertical one
+   still scrolls the page. */
+.tree > svg { touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+
 /* Growth: static unless tree.js puts .grow on the svg (first visit, or a
    click on the trunk). Ground, then trunk, branches, leaves, fruit. */
-.grow .ground { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .6s ease-out both; }
-.grow .shade { transform-origin: 200px 453px; animation: scaleIn .6s ease-out both; }
-.grow .root { transform-origin: 200px 451px; animation: scaleIn .4s ease-out .3s both; }
-.grow .trunk, .grow .trunk-shade { transform-origin: 200px 452px; animation: rise .7s ease-out .3s both; }
+.grow .land { transform-origin: 200px 458px; animation: scaleIn .6s ease-out both; }
+.grow .bole { transform-origin: 200px 456px; animation: rise .7s ease-out .3s both; }
 .grow .branch { animation: scaleIn .5s ease-out both; animation-delay: calc(.85s + var(--i, 0) * .07s); }
-.grow .base, .grow .leaf { animation: scaleIn .45s cubic-bezier(.34, 1.3, .64, 1) both; animation-delay: calc(1s + var(--i, 0) * .008s); }
-.grow .tuft { animation: scaleIn .4s ease-out 2.3s both; }
+.grow .blob, .grow .leaf { animation: scaleIn .45s cubic-bezier(.34, 1.3, .64, 1) both; animation-delay: calc(1s + var(--i, 0) * .007s); }
+.grow .tuft, .grow .daisy { animation: scaleIn .4s ease-out 2.3s both; }
 .grow .fruit { animation: scaleIn .4s ease-out both; animation-delay: calc(2.5s + var(--i, 0) * .1s); }
 .grow .fruit.ripe { animation-name: pop; animation-duration: .5s; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
@@ -191,7 +225,7 @@ h2 {
 @keyframes wobble { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-8deg); } 70% { transform: rotate(6deg); } }
 @keyframes snap { to { transform: scaleY(.15); opacity: 0; } }
 
-/* "Locals Only · in progress · not ripe yet" */
+/* "Kata · in progress · not ready to pick yet" */
 .tip {
   position: absolute;
   transform: translate(-50%, -100%);

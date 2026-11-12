@@ -27,14 +27,14 @@ module.exports = function (eleventyConfig) {
   });
 
   // Accessible label for the tree's SVG, generated from the roster:
-  // "A satsuma tree with three fruit: two ripe, one still green."
+  // "A satsuma tree with three fruit: two ripe, one still growing."
   eleventyConfig.addFilter("treeLabel", (projects) => {
     const N = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
     const count = { live: 0, "in-progress": 0, "coming-soon": 0 };
     for (const project of projects) count[project.data.status]++;
     const parts = [];
     if (count.live) parts.push(`${N[count.live]} ripe`);
-    if (count["in-progress"]) parts.push(`${N[count["in-progress"]]} still green`);
+    if (count["in-progress"]) parts.push(`${N[count["in-progress"]]} still growing`);
     if (count["coming-soon"]) parts.push(`${N[count["coming-soon"]]} in blossom`);
     const total = projects.length;
     return `A satsuma tree with ${N[total] || total} fruit: ${parts.join(", ")}.`;
