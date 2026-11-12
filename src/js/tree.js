@@ -93,7 +93,7 @@
     var f = e.currentTarget;
     f.classList.add('wobble');
     var p = at(f, 0, -6);
-    tip.textContent = f.dataset.name + ' · ' + f.dataset.status + ' · not ripe yet';
+    tip.textContent = f.dataset.name + ' · ' + f.dataset.status + ' · not ready to pick yet';
     tip.style.left = p.x + 'px'; tip.style.top = p.y + 'px'; tip.hidden = false;
     clearTimeout(tip.timer);
     tip.timer = setTimeout(function () { tip.hidden = true; }, 1800);
