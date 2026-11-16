@@ -1,6 +1,6 @@
 module.exports = {
   name: "Studio Satsuma",
   description:
-    "Studio Satsuma is a small studio in Brooklyn making small, useful apps. Also available to help founders scale what they've built.",
+    "Studio Satsuma makes small, useful apps in Brooklyn.",
   email: "hello@satsuma.works",
 };

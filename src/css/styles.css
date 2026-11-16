@@ -86,14 +86,12 @@ h2 {
   line-height: 1.3;
 }
 
-/* Home: one composed screen. Copy on the left (wordmark, roster, offer),
+/* Home: one composed screen. Copy on the left (wordmark, tagline, email),
    the tree on the right. Stacked on narrow screens. */
 .home {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-  grid-template-areas:
-    "hero stage"
-    "services stage";
+  grid-template-areas: "hero stage";
   align-content: center;
   align-items: start;
   column-gap: clamp(32px, 6vw, 96px);
@@ -299,7 +297,7 @@ h2 {
 @media (max-width: 899px) {
   .home {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "hero" "stage" "services";
+    grid-template-areas: "hero" "stage";
     align-content: start;
     row-gap: 32px;
     padding-top: 40px;
@@ -364,23 +362,21 @@ h2 {
 .status[data-status=in-progress]::before { background: var(--unripe); }
 .status[data-status=coming-soon]::before { background: #fff; box-shadow: inset 0 0 0 1.5px var(--blossom-shadow); }
 
-/* The offer */
-.services {
-  grid-area: services;
-  margin: 0;
-  max-width: 26rem;
+/* The email, the one way to reach the studio */
+.contact {
+  margin: 12px 0 0;
   font-size: 17px;
   line-height: 1.5;
 }
-.services a {
+.contact a {
   color: var(--tangerine);
   font-weight: 500;
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-thickness: 2px;
 }
-.services a:hover,
-.services a:focus-visible { text-decoration-color: var(--celadon); }
+.contact a:hover,
+.contact a:focus-visible { text-decoration-color: var(--celadon); }
 
 /* Project pages */
 .project { max-width: 44rem; gap: 36px; }
