@@ -2,7 +2,7 @@
 title: Cartwheel
 slug: cartwheel
 status: live          # live | in-progress | coming-soon
-oneLine: A system of record for your workouts. Bring your own agent.
+oneLine: A system of record for your workouts.
 platform: [ios]       # [PLATFORM: iOS / web]
 links:                # the first link is where a picked fruit goes
   - label: cartwheel.fit

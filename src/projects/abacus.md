@@ -2,7 +2,7 @@
 title: "Project: Abacus"
 slug: abacus
 status: live
-oneLine: Splits expenses for roommates, couples and the self-employed. Bring your own agent.
+oneLine: Splits expenses for roommates, couples and the self-employed.
 platform: ["[platform]"]
 links:
   - label: abacus.satsuma.works
