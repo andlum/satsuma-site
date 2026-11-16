@@ -57,29 +57,46 @@
     }
   }
 
+  function rest(s) {
+    s.a = s.va = 0; s.on = false;
+    if (s.q) { s.q = 0; s.el.style.transform = ''; }
+  }
+
   function frame(now) {
     var dt = Math.min(.032, (now - last) / 1000); last = now;
     var t = now / 1000, i, s, live = puffs.length > 0;
 
+    // the box the live puffs cover: a part outside it feels no air, so it
+    // skips windAt, and if it's also at rest it costs nothing this frame
+    var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     for (i = puffs.length - 1; i >= 0; i--) {
-      puffs[i].age += dt;
-      if (puffs[i].age >= puffs[i].life) puffs.splice(i, 1);
+      var p = puffs[i];
+      p.age += dt;
+      if (p.age >= p.life) { puffs.splice(i, 1); continue; }
+      if (p.x - p.r < x0) x0 = p.x - p.r; if (p.x + p.r > x1) x1 = p.x + p.r;
+      if (p.y - p.r < y0) y0 = p.y - p.r; if (p.y + p.r > y1) y1 = p.y + p.r;
     }
 
     for (i = 0; i < parts.length; i++) {
       s = parts[i];
-      windAt(s.x, s.y);
+      if (s.x > x0 && s.x < x1 && s.y > y0 && s.y < y1) windAt(s.x, s.y);
+      else if (!s.on) continue;
+      else wx = wy = 0;
       var along = wx * s.cos + wy * s.sin; // air across the part, in its own frame
       var mag = Math.abs(wx) + Math.abs(wy);
       if (!mag && !s.on) continue;
-      if (s.el.dataset.state && s.el.dataset.state !== 'idle') { s.a = s.va = 0; s.el.style.transform = ''; s.on = false; continue; } // a fruit being picked
+      if (s.el.dataset.state && s.el.dataset.state !== 'idle') { rest(s); continue; } // a fruit being picked
       var force = s.gain * along + s.flutter * mag * Math.sin(t * s.f + s.ph);
       s.va += (force - s.k * s.a - s.c * s.va) * dt;
       s.a += s.va * dt;
       if (s.a > s.max) { s.a = s.max; s.va = 0; } else if (s.a < -s.max) { s.a = -s.max; s.va = 0; }
-      if (!mag && Math.abs(s.a) < .15 && Math.abs(s.va) < 2) { s.a = s.va = 0; s.on = false; s.el.style.transform = ''; continue; }
+      if (!mag && Math.abs(s.a) < .15 && Math.abs(s.va) < 2) { rest(s); continue; }
       s.on = live = true;
-      s.el.style.transform = 'rotate(' + s.a.toFixed(2) + 'deg)';
+      // Half a degree is finer than the eye can follow on a leaf this size.
+      // Writing only when the rounded angle changes spares the browser a
+      // style and paint pass for every part that has barely moved.
+      var q = Math.round(s.a * 2) / 2;
+      if (q !== s.q) { s.q = q; s.el.style.transform = q ? 'rotate(' + q + 'deg)' : ''; }
     }
 
     if (live) requestAnimationFrame(frame); else running = false;

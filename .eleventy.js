@@ -12,8 +12,8 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy(".nojekyll");
 
   // Anything with `draft: true` in its front matter is left out of the build
-  // and out of every collection. Kata's page is scaffolded this way until its
-  // name is settled.
+  // and out of every collection. Use it for a page
+  // that should stay out of the build entirely.
   eleventyConfig.addPreprocessor("drafts", "*", (data) => {
     if (data.draft) return false;
   });

@@ -2,8 +2,10 @@
   The satsuma tree. One fruit per project in `collections.projects`, placed at
   the project's `slot`; fruit type follows status (live = ripe, in-progress =
   "green": a smaller orange fruit that can't be picked yet, coming-soon =
-  blossom). Growth, picking and cards live in
-  src/js/tree.js, which reads everything it needs from this markup.
+  blossom). A ripe fruit is a link to the project's first `links` entry:
+  pull it off the tree, or press Enter on it, to go there. Growth, picking and
+  the hover label live in src/js/tree.js, which reads everything it needs
+  from this markup.
 
   The static drawing (ground, trunk, branches, canopy) is tree-art.njk,
   written by scripts/draw-tree.js; the fruit loop and the card are
@@ -30,7 +32,7 @@
 ] %}
 {% set kinds = { "live": "ripe", "in-progress": "green", "coming-soon": "blossom" } %}
 <div class="tree">
-  <svg viewBox="0 0 400 500" role="img" aria-label="{{ collections.projects | treeLabel }}">
+  <svg viewBox="0 0 400 500" role="group" aria-label="{{ collections.projects | treeLabel }}">
     {% include "tree-art.njk" %}
     <g class="fruits">
       {%- for project in collections.projects %}
@@ -38,7 +40,8 @@
       {%- set kind = kinds[p.status] %}
       {%- set anchor = anchors[p.slot - 1] %}
       <g class="slot" transform="translate({{ anchor[0] }} {{ anchor[1] }})">
-        <g class="fruit {{ kind }}" data-slug="{{ p.slug }}" data-status="{{ p.status | statusWord | lower }}" data-name="{{ p.title }}" style="--i:{{ loop.index0 }}">
+        {%- set href = p.links[0].url if (kind == "ripe" and p.links and p.links.length) else "" %}
+        <{{ "a" if href else "g" }} class="fruit {{ kind }}"{% if href %} href="{{ href }}" aria-label="{{ p.title }}: {{ p.oneLine }}" aria-describedby="pick-hint"{% endif %} data-slug="{{ p.slug }}" data-status="{{ p.status | statusWord }}" data-name="{{ p.title }}" data-line="{{ p.oneLine }}" style="--i:{{ loop.index0 }}">
           {%- if kind == "ripe" %}
           <path class="stem" d="M0 0 L0 12"/>
           <g class="body" transform="translate(0 12)">
@@ -76,49 +79,31 @@
             </g>
           </g>
           {%- endif %}
-        </g>
+        </{{ "a" if href else "g" }}>
       </g>
       {%- endfor %}
     </g>
-    {#- "Pick me": an arrow from below the canopy to the first ripe fruit.
-        tree.js hides it once a fruit has been picked. #}
+    {#- "Pick one": a short arrow dropping onto the first ripe fruit's shoulder
+        from above and outside, with the words at its tail. tree.js hides it
+        on the first touch, hover or focus of any fruit. #}
     {%- set live = [] %}
     {%- for project in collections.projects %}{% if project.data.status == "live" %}{% set _ = live.push(anchors[project.data.slot - 1]) %}{% endif %}{% endfor %}
     {%- if live.length %}
     {%- set a = live[0] %}
     {%- set d = -1 if a[0] < 200 else 1 %}
-    {%- set ex = a[0] + d * 14 %}{% set ey = a[1] + 43 %}
-    {%- set sx = a[0] + d * 34 %}{% set sy = 380 %}
+    {%- set arc = "M" ~ (a[0] + d * 44) ~ " " ~ (a[1] - 30) ~ " C" ~ (a[0] + d * 42) ~ " " ~ (a[1] - 10) ~ " " ~ (a[0] + d * 27) ~ " " ~ (a[1] + 2) ~ " " ~ (a[0] + d * 16) ~ " " ~ (a[1] + 8) %}
     <g class="pick" aria-hidden="true">
-      <path class="pick-halo" pathLength="1" d="M{{ sx }} {{ sy }} C{{ sx + d * 12 }} {{ sy - (sy - ey) * 0.39 }} {{ ex + d * 24 }} {{ ey + 19 }} {{ ex }} {{ ey }}"/>
-      <path class="pick-line" pathLength="1" d="M{{ sx }} {{ sy }} C{{ sx + d * 12 }} {{ sy - (sy - ey) * 0.39 }} {{ ex + d * 24 }} {{ ey + 19 }} {{ ex }} {{ ey }}"/>
-      <path class="pick-head" d="M-7 -5 L0 0 L-7 5" transform="translate({{ ex }} {{ ey }}) rotate({{ -38 if d < 0 else -142 }})"/>
-      <text class="pick-text" x="{{ a[0] + d * 60 }}" y="402" text-anchor="middle">Pick me</text>
+      <text class="pick-text" x="{{ a[0] + d * 44 }}" y="{{ a[1] - 38 }}" text-anchor="middle">Pick one</text>
+      <path class="pick-halo" pathLength="1" d="{{ arc }}"/>
+      <path class="pick-line" pathLength="1" d="{{ arc }}"/>
+      <g class="pick-tip" transform="translate({{ a[0] + d * 16 }} {{ a[1] + 8 }}) rotate({{ 151 if d > 0 else 29 }})"><path class="pick-head" d="M-7 -5 L0 0 L-7 5"/></g>
     </g>
     {%- endif %}
   </svg>
-  <dialog class="card" aria-labelledby="card-title">
-    <svg class="card-fruit" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="17" r="12"/><path d="M16 5c2-3 5-3 6-2-2 0-4 1-6 2z"/></svg>
-    <div class="card-body"></div>
-    <button class="close" type="button" aria-label="Close">&times;</button>
-  </dialog>
+  {#- Name and one line of the fruit under the pointer, shown above the tree.
+      Absolutely placed, so it never moves the tree. Screen readers get the
+      same words from each fruit's aria-label. #}
+  <p class="peek" aria-hidden="true"><span class="peek-name"></span> <span class="peek-status"></span><span class="peek-line"></span></p>
+  <p class="visually-hidden" id="pick-hint">Grab it and pull it off the tree, or press Enter, to visit.</p>
   <div class="tip" role="status" hidden></div>
-
-  {#- Card contents, one per ripe fruit. tree.js clones the template whose
-      data-slug matches the picked fruit. #}
-  {%- for project in collections.projects %}
-  {%- if project.data.status == "live" %}
-  <template data-slug="{{ project.data.slug }}">
-    <h2>{{ project.data.title }}</h2>
-    <p class="card-status"><span class="status" data-status="{{ project.data.status }}">{{ project.data.status | statusWord }}</span></p>
-    <p>{{ project.data.oneLine }}</p>
-    {%- if project.url or (project.data.links and project.data.links.length) %}
-    <p class="links">
-      {%- if project.url %}<a href="{{ project.url }}">Project page</a>{% endif %}
-      {%- for link in project.data.links %}<a href="{{ link.url }}">{{ link.label }}</a>{% endfor %}
-    </p>
-    {%- endif %}
-  </template>
-  {%- endif %}
-  {%- endfor %}
 </div>

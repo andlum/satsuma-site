@@ -1,17 +1,18 @@
 ---
-title: Kata
-slug: kata
-status: in-progress  # live | in-progress | coming-soon
-oneLine: A workout companion with an AI coach built in.
+title: Cartwheel
+slug: cartwheel
+status: live          # live | in-progress | coming-soon
+oneLine: A system of record for your workouts. Bring your own agent.
 platform: [ios]       # [PLATFORM: iOS / web]
-links:
-  - label: App Store
-    url: "[APP STORE / WEB URL]"
+links:                # the first link is where a picked fruit goes
+  - label: cartwheel.fit
+    url: https://cartwheel.fit
+projectPage: false          # links out; no project page until the copy below is written
 slot: 3
-# icon: /img/projects/kata.svg
+# icon: /img/projects/cartwheel.svg
 shipped: "[DATE FIRST SHIPPED]"
 # screenshots:
-#   - src: /img/projects/kata-1.png
+#   - src: /img/projects/cartwheel-1.png
 #     alt: "[SCREENSHOT 1: what it shows]"
 ---
 
