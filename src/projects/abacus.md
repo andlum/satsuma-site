@@ -1,5 +1,5 @@
 ---
-title: Abacus
+title: "Project: Abacus"
 slug: abacus
 status: live
 oneLine: Splits expenses for roommates, couples and the self-employed. Bring your own agent.

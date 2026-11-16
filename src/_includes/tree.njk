@@ -41,7 +41,7 @@
       {%- set anchor = anchors[p.slot - 1] %}
       <g class="slot" transform="translate({{ anchor[0] }} {{ anchor[1] }})">
         {%- set href = p.links[0].url if (kind == "ripe" and p.links and p.links.length) else "" %}
-        <{{ "a" if href else "g" }} class="fruit {{ kind }}"{% if href %} href="{{ href }}" aria-label="{{ p.title }}: {{ p.oneLine }}" aria-describedby="pick-hint"{% endif %} data-slug="{{ p.slug }}" data-status="{{ p.status | statusWord }}" data-name="{{ p.title }}" data-line="{{ p.oneLine }}" style="--i:{{ loop.index0 }}">
+        <{{ "a" if href else "g" }} class="fruit {{ kind }}"{% if href %} href="{{ href }}" aria-label="{{ p.title }}. {{ p.oneLine }}" aria-describedby="pick-hint"{% endif %} data-slug="{{ p.slug }}" data-status="{{ p.status | statusWord }}" data-name="{{ p.title }}" data-line="{{ p.oneLine }}" style="--i:{{ loop.index0 }}">
           {%- if kind == "ripe" %}
           <path class="stem" d="M0 0 L0 12"/>
           <g class="body" transform="translate(0 12)">
