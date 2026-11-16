@@ -14,8 +14,8 @@ what an app user finds. It must stand on its own without naming Andrew.
 
 **Primary reader:** people who'd use the apps. **Second reader:** a recruiter
 who followed the link from andlum.com and wants to see shipped work.
-**Third reader:** a founder who shipped a prototype with AI and now needs it
-to scale.
+(A third reader, founders needing a prototype scaled, was dropped in
+Nov 2026 along with the services line.)
 
 ## Decisions (from the grilling session)
 
@@ -23,7 +23,7 @@ to scale.
 |---|---|
 | What Satsuma is | A personal studio that might take client work. Satsuma LLC. |
 | Voice | Studio "we." The site never names Andrew. andlum.com links here; nothing links back. |
-| Services | One sentence aimed at founders who've outgrown a prototype, plus hello@satsuma.works. No services page. |
+| Services | Dropped (Nov 2026): the site is about the apps only. The home page keeps hello@satsuma.works on its own as the contact. |
 | Roster | Every project appears, with a status. Unreleased ones get a name and one line, no page. |
 | Statuses | Live, In progress, Coming soon. Shown on the tree as ripe fruit, green fruit, blossom. |
 | Kata | Live app, name not final. Project page scaffolded with placeholders, `draft: true`, never built. |
