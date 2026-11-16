@@ -21,7 +21,7 @@ hideFooter: true
       {% for project in collections.projects %}
       <li>
         {% if project.data.icon %}<img class="project-icon" src="{{ project.data.icon }}" alt="" width="40" height="40">{% endif %}
-        <span class="name">{% if project.url %}<a href="{{ project.url }}" tabindex="-1">{{ project.data.title }}</a>{% else %}{{ project.data.title }}{% endif %}</span>
+        <span class="name">{% if project.url %}<a href="{{ project.url }}" tabindex="-1">{{ project.data.title }}</a>{% elif project.data.status == "live" and project.data.links and project.data.links.length %}<a href="{{ project.data.links[0].url }}" tabindex="-1">{{ project.data.title }}</a>{% else %}{{ project.data.title }}{% endif %}</span>
         <span class="status" data-status="{{ project.data.status }}">{{ project.data.status | statusWord }}</span>
         <span class="one-line">{{ project.data.oneLine }}</span>
       </li>
